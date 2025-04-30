@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import '../Pages/Login.css'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 const Login = () => {
     const[login,setLogin]=useState("")
@@ -8,7 +10,7 @@ const Login = () => {
     const handlechange=(e)=>{
         setLogin({...login,[e.target.name]:e.target.value})
     }
-
+    const navigate=useNavigate()
     const validate=()=>{
         const errormsg={}
         if(!login.name){
@@ -22,10 +24,17 @@ const Login = () => {
     }
 
     const handlesubmit=(e)=>{
-        e.preventDefault()
+        
         if(!validate()){
             console.log("validation error")
-        }
+          }
+            e.preventDefault()
+            axios.post("https://reactecomapi.onrender.com/auth/login",login).then((response)=>{
+              console.log(response)
+              navigate('/home')
+            }).catch((error)=>{
+              console.log(error)
+            })
     }
 
   return (

@@ -1,0 +1,42 @@
+.sidebar-profile {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar-profile img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+  
+  .sidebar-profile h5 {
+    margin-top: 12px;
+    font-weight: 600;
+  }
+  
+  .sidebar-profile small {
+    color: #6c757d;
+  }
+  
+  .sidebar-profile .stats {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    font-size: 0.9rem;
+  }
+  
+  .sidebar-profile .stats div {
+    text-align: center;
+  }
+  
+  .sidebar-profile .btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+  

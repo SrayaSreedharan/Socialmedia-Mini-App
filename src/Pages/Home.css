@@ -1,0 +1,41 @@
+/* App-wide background color */
+body {
+    background-color: #f4f6f8;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Navbar branding */
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  /* Sidebar tweaks */
+  .list-group-item {
+    font-size: 1.05rem;
+    transition: background 0.2s ease;
+  }
+  
+  .list-group-item:hover {
+    background-color: #e9ecef;
+  }
+  
+  /* Post card hover effect */
+  .card:hover {
+    transform: scale(1.01);
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  /* Buttons */
+  .btn {
+    border-radius: 20px;
+  }
+  
+  /* Avatar in navbar */
+  .navbar img {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border: 2px solid white;
+  }
+  

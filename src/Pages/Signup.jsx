@@ -1,23 +1,26 @@
 import React from 'react'
 import { useState } from 'react';
 import '../Pages/Signup.css'
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-  const[login,setLogin]=useState("")
+  const[signup,setSignup]=useState("")
       const[error,setError]=useState([])
-  
+      
+      const navigate=useNavigate()
       const validate=()=>{
           const errormsg={}
-          if(!login.name){
+          if(!signup.name){
               errormsg.name="enter name"
           }
-          if(!login.email){
+          if(!signup.email){
             errormsg.email="enter email"
         }
-        if(!login.username){
+        if(!signup.username){
           errormsg.username="enter username"
       }
-          if(!login.password){
+          if(!signup.password){
               errormsg.password="enter password"
           }
           setError(errormsg)
@@ -25,24 +28,26 @@ const Signup = () => {
       }
   
       const handlechange=(e)=>{
-          setLogin({...login,[e.target.name]:e.target.value})
+          setSignup({...signup,[e.target.name]:e.target.value})
       }
   
       const submit=(e)=>{
-          e.preventDefault()
-          if(!validate()){
-              console.log("validation error")
-          }
-  
+        if(!validate()){
+          console.log("error")
+      }
+        e.preventDefault()
+        axios.post("https://reactecomapi.onrender.com/auth/usersignup",signup).then((response)=>{
+          console.log(response)
+          navigate('/login')
+        }).catch((error)=>{
+          console.log(error)
+        })
       }
   
   return (
     <div className="register">
       <div className="card">
-        <div className="left">
-      
-    
-          
+        <div className="left"> 
         </div>
         <div className="right">
           <h1>Register</h1>
