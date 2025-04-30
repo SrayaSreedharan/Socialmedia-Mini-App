@@ -38,7 +38,7 @@ const Signup = () => {
         e.preventDefault()
         axios.post("https://reactecomapi.onrender.com/auth/usersignup",signup).then((response)=>{
           console.log(response)
-          navigate('/login')
+          navigate('/login');
         }).catch((error)=>{
           console.log(error)
         })

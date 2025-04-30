@@ -2,8 +2,8 @@ import {BrowserRouter,Routes,Route} from 'react-router-dom';
 import './App.css'
 import SidebarProfile from './Components/Sidebarprofile';
 import Home from './Pages/Home';
-import Login from './src/Pages/Login';
-import Signup from './src/Pages/Signup';
+import Login from './Pages/Login';
+import Signup from './Pages/Signup';
 
 function App() {
   

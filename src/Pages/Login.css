@@ -1,11 +1,11 @@
-.login {
+.login2{
     min-height: 100vh;
     background-color: rgb(193, 190, 255);
     display: flex;
     align-items: center;
     justify-content: center;
   
-    .card {
+    .card2 {
       width: 50%;
       display: flex;
       background-color: white;
@@ -13,7 +13,7 @@
       height: 600px;
      
   
-      .left {
+      .left2 {
         flex: 1;
         background: linear-gradient(rgba(39, 11, 96, 0.5), rgba(39, 11, 96, 0.5)),
           url("https://images.pexels.com/photos/3228727/pexels-photo-3228727.jpeg?auto=compress&cs=tinysrgb&w=1600")
@@ -30,7 +30,7 @@
           line-height: 100px;
         }
 }
-.right {
+.right2 {
         flex: 1;
         padding: 50px;
         display: flex;
@@ -44,7 +44,7 @@
     
         }
         
-        form {
+        .frrm{
           display: flex;
           flex-direction: column;
           gap: 10px;
@@ -56,7 +56,7 @@
          
           }
           
-          button {
+          .butn {
             width: 50%;
             padding: 10px;
             border: none;
@@ -71,25 +71,25 @@
     }
   }
 @media screen and (max-width: 600px) {
-        .login {
+        .login2 {
           flex-direction: column;
           height: 1000px;
       
-          .card {
+          .card2 {
             flex-direction: column;
             width: 350px;
             height: auto;
             margin-top: 10px;
           }
       
-          .left {
+          .left2 {
             background-position: top;
             padding: 30px;
             gap: 20px;
            
           }
       
-          .right {
+          .right2 {
             padding: 30px;
       
             h1 {
@@ -97,7 +97,7 @@
               margin-top: 20px;
             }
       
-            form {
+            .frrm {
               gap: 20px;
               height: 400px;
               border-radius: 0px;
@@ -107,7 +107,7 @@
                 width: 100%;
               }
       
-              button {
+              .butn {
                 width: 100%;
                 margin: 0;
               }
