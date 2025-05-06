@@ -1,70 +1,164 @@
-import React from 'react'
-import { useState } from 'react';
-import '../Pages/Signup.css'
-import axios from 'axios';
+// import React from 'react'
+// import { useState } from 'react';
+// import '../Pages/Signup.css'
+// import axios from 'axios';
+// import { useNavigate } from 'react-router-dom';
+
+// const Signup = () => {
+//   const[signup,setSignup]=useState("")
+//       const[error,setError]=useState([])
+      
+//       const navigate=useNavigate()
+//       const validate=()=>{
+//           const errormsg={}
+//           if(!signup.name){
+//               errormsg.name="enter name"
+//           }
+//           if(!signup.email){
+//             errormsg.email="enter email"
+//         }
+//         if(!signup.username){
+//           errormsg.username="enter username"
+//       }
+//           if(!signup.password){
+//               errormsg.password="enter password"
+//           }
+//           setError(errormsg)
+//           return Object.keys(errormsg).length==0
+//       }
+  
+//       const handlechange=(e)=>{
+//           setSignup({...signup,[e.target.name]:e.target.value})
+//       }
+  
+//       const submit=(e)=>{
+//         if(!validate()){
+//           console.log("error")
+//       }
+//         e.preventDefault()
+//         axios.post("https://reactecomapi.onrender.com/auth/usersignup",signup).then((response)=>{
+//           console.log(response)
+//           navigate('/login');
+//         }).catch((error)=>{
+//           console.log(error)
+//         })
+//       }
+  
+//   return (
+//     <div className="register">
+//       <div className="card">
+//         <div className="left"> 
+//         </div>
+//         <div className="right">
+//           <h1>Register</h1>
+//           <form>
+//             <label style={{color:"red"}}>{error.name}</label>
+//             <input type='text' name="name" placeholder='name' onChange={handlechange}/>{<br></br>}
+//             <label style={{color:"red"}}>{error.email}</label>
+//             <input type='text' name="email" placeholder='email' onChange={handlechange}/>{<br></br>}
+//             <label style={{color:"red"}}>{error.username}</label>
+//             <input type='text' name="username" placeholder='username' onChange={handlechange}/>{<br></br>}
+//             <label style={{color:"red"}}>{error.password}</label>
+//             <input type='text' name="password" placeholder='password'  onChange={handlechange}/>{<br></br>}
+//             <button type='submit' onClick={submit}>register</button>{<br></br>}
+//         </form>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+// export default Signup
+
+
+
+
+import React, { useState, useEffect } from 'react';
+import '../Pages/Signup.css';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signupUser } from '../Redux/Slice/Authslice'; 
 
 const Signup = () => {
-  const[signup,setSignup]=useState("")
-      const[error,setError]=useState([])
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { status, error: reduxError, data } = useSelector((state) => state.user);
+
+  const [signup, setSignup] = useState({
+    name: '',
+    email: '',
+    username: '',
+    password: ''
+  });
+
+  const [error, setError] = useState({});
+
+  const validate = () => {
+    const errormsg = {};
+    if (!signup.name) errormsg.name = "Enter name";
+    if (!signup.email) errormsg.email = "Enter email";
+    if (!signup.username) errormsg.username = "Enter username";
+    if (!signup.password) errormsg.password = "Enter password";
+    setError(errormsg);
+    return Object.keys(errormsg).length === 0;
+  };
+
+  const handleChange = (e) => {
+    setSignup({ ...signup, [e.target.name]: e.target.value });
+    setError({});  
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) return;  
+
+    dispatch(signupUser(signup))
+      .unwrap()
+      .then(() => {
+        navigate('/login'); 
+      })
+      .catch((err) => {
+        console.log('Signup failed:', err);
+      });
+  };
+
+  useEffect(() => {
+    if (status === 'succeeded') {
       
-      const navigate=useNavigate()
-      const validate=()=>{
-          const errormsg={}
-          if(!signup.name){
-              errormsg.name="enter name"
-          }
-          if(!signup.email){
-            errormsg.email="enter email"
-        }
-        if(!signup.username){
-          errormsg.username="enter username"
-      }
-          if(!signup.password){
-              errormsg.password="enter password"
-          }
-          setError(errormsg)
-          return Object.keys(errormsg).length==0
-      }
-  
-      const handlechange=(e)=>{
-          setSignup({...signup,[e.target.name]:e.target.value})
-      }
-  
-      const submit=(e)=>{
-        if(!validate()){
-          console.log("error")
-      }
-        e.preventDefault()
-        axios.post("https://reactecomapi.onrender.com/auth/usersignup",signup).then((response)=>{
-          console.log(response)
-          navigate('/login');
-        }).catch((error)=>{
-          console.log(error)
-        })
-      }
-  
+      console.log('Signup successful!');
+    }
+  }, [status]);
+
   return (
     <div className="register">
       <div className="card">
-        <div className="left"> 
-        </div>
+        <div className="left"></div>
         <div className="right">
           <h1>Register</h1>
-          <form>
-            <label style={{color:"red"}}>{error.name}</label>
-            <input type='text' name="name" placeholder='name' onChange={handlechange}/>{<br></br>}
-            <label style={{color:"red"}}>{error.email}</label>
-            <input type='text' name="email" placeholder='email' onChange={handlechange}/>{<br></br>}
-            <label style={{color:"red"}}>{error.username}</label>
-            <input type='text' name="username" placeholder='username' onChange={handlechange}/>{<br></br>}
-            <label style={{color:"red"}}>{error.password}</label>
-            <input type='text' name="password" placeholder='password'  onChange={handlechange}/>{<br></br>}
-            <button type='submit' onClick={submit}>register</button>{<br></br>}
-        </form>
+          <form onSubmit={handleSubmit}>
+            <label style={{ color: 'red' }}>{error.name}</label>
+            <input type='text' name="name" placeholder='Name' onChange={handleChange} />
+            <br />
+            <label style={{ color: 'red' }}>{error.email}</label>
+            <input type='text' name="email" placeholder='Email' onChange={handleChange} />
+            <br />
+            <label style={{ color: 'red' }}>{error.username}</label>
+            <input type='text' name="username" placeholder='Username' onChange={handleChange} />
+            <br />
+            <label style={{ color: 'red' }}>{error.password}</label>
+            <input type='password' name="password" placeholder='Password' onChange={handleChange} />
+            <br />
+            {reduxError && <p style={{ color: 'red' }}>{reduxError}</p>}
+            <button type='submit'>
+              {status === 'loading' ? 'Registering...' : 'Register'}
+              {status === 'succeeded' && <p>Signup successful! Welcome, {data?.name || signup.name}</p>}
+
+            </button>
+          </form>
         </div>
       </div>
     </div>
   );
 };
-export default Signup
+
+export default Signup;

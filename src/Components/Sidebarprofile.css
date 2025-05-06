@@ -6,7 +6,6 @@
     text-align: center;
     margin-bottom: 20px;
   }
-  
   .sidebar-profile img {
     width: 100px;
     height: 100px;
@@ -14,29 +13,114 @@
     object-fit: cover;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
   }
-  
   .sidebar-profile h5 {
     margin-top: 12px;
     font-weight: 600;
   }
-  
   .sidebar-profile small {
     color: #6c757d;
   }
-  
   .sidebar-profile .stats {
     display: flex;
     justify-content: space-around;
     margin: 20px 0;
     font-size: 0.9rem;
   }
-  
   .sidebar-profile .stats div {
     text-align: center;
   }
-  
   .sidebar-profile .btn {
     width: 100%;
     margin-top: 8px;
+  }
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 2rem;
+  }
+  .photo-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+  .photo-card:hover {
+    transform: translateY(-5px);
+  }
+  .image-container {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 0;
+  }
+  .photo-meta {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  .story-highlights {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 10px;
+    justify-content: center;
+  }
+  .story-highlights figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    margin: 0;
+  }
+  .story-highlights img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+  .story-highlights figcaption {
+    margin-top: 8px;
+    font-size: 0.85rem;
+    text-align: center;
+    color: #333;
+  }  
+@media (max-width: 600px) {
+    .profile-header {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .stats {
+      justify-content: center;
+    }
+    .photo-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: 0.8rem;
+    }
+    .story-highlights {
+      gap: 12px;
+    }
+    .story-highlights figure {
+      width: 60px;
+    }
+    .story-highlights img {
+      width: 50px;
+      height: 50px;
+    }
+    .story-highlights figcaption {
+      font-size: 0.75rem;
+    }
   }
   
