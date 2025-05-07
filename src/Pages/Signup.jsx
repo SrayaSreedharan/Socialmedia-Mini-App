@@ -152,7 +152,6 @@ const Signup = () => {
             <button type='submit'>
               {status === 'loading' ? 'Registering...' : 'Register'}
               {status === 'succeeded' && <p>Signup successful! Welcome, {data?.name || signup.name}</p>}
-
             </button>
           </form>
         </div>
@@ -160,5 +159,4 @@ const Signup = () => {
     </div>
   );
 };
-
 export default Signup;

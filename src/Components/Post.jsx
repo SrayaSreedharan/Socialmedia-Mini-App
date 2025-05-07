@@ -19,5 +19,4 @@ const Post = ({ username, content, time , image ,image1}) => (
     </div>
   </div>
 );
-
 export default Post;

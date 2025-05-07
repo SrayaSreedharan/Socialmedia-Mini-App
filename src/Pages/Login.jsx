@@ -13,8 +13,8 @@ const Login = () => {
     const navigate=useNavigate();
     const validate=()=>{
         const errormsg={}
-        if(!login.name){
-            errormsg.name="enter name"
+        if(!login.email){
+            errormsg.email="enter email"
         }
         if(!login.password){
             errormsg.password="enter password"
@@ -29,9 +29,11 @@ const Login = () => {
             console.log("validation error")
           }
             e.preventDefault()
-            axios.post("https://reactecomapi.onrender.com/auth/login",login).then((response)=>{
-              console.log(response.data)
+            axios.post("https://reactecomapi.onrender.com/socioauth/login",login).then((response)=>{
+              console.log(response.data._id)
+              localStorage.setItem("userId",response.data._id)
               navigate('/home');
+              
             }).catch((error)=>{
               console.log(error)
             })
@@ -49,8 +51,8 @@ const Login = () => {
         <div className="right2">
           <form className='frrm'>
           <h1>Login</h1>
-            <label style={{color:"red"}}>{error.name}</label>
-            <input type='text' name="name" placeholder='usename' onChange={handlechange}/>{<br></br>}
+            <label style={{color:"red"}}>{error.email}</label>
+            <input type='text' name="email" placeholder='Email' onChange={handlechange}/>{<br></br>}
             <label style={{color:"red"}}>{error.password}</label>
             <input type='text' name="password" placeholder='password'  onChange={handlechange}/>{<br></br>}
             <button type='submit'className='butn' onClick={handlesubmit}>login</button>{<br></br>}
@@ -62,3 +64,7 @@ const Login = () => {
   )
 }
 export default Login
+
+
+
+              
