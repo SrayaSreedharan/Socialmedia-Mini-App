@@ -3,21 +3,21 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Components/Sidebarprofile.css'
 import axios from 'axios';
 import { useState } from 'react';
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
 const SidebarProfile = () => {
   const[data,setData]=useState([])
-  // const [userId, setUserId] = useState('');
-  const [text, setText] = useState('');
-  const [image, setImage] = useState('');
+  const[postdata,setPostdata]=useState({})
+  const [posts, setPosts] = useState([]);
+  const [postType, setPostType] = useState('both');
   const [showAddPostForm, setShowAddPostForm] = useState(false);
   const [showEditPostForm, setShowEditPostForm] = useState(false);
   const [bio, setBio] = useState('');
   const [newusername, setusername] = useState(''); 
   
-
   useEffect(()=>{
     const id=localStorage.getItem("userId")
-    
     axios.get(`https://reactecomapi.onrender.com/socioauth/user/${id}`).then((response)=>{
       console.log(response.data)
       setData([response.data])
@@ -25,25 +25,46 @@ const SidebarProfile = () => {
       console.log(error)
     });
   },[])
+
+  const handlechange=(e)=>{
+    setPostdata({...postdata,[e.target.name]:e.target.value})
+    console.log(postdata)
+  }
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(URL.createObjectURL(file)); 
-    }
+    console.log(e.target.files[0])
+    setPostdata({...postdata,imageUrls:e.target.files[0]})
+    console.log(postdata)
   };
 
-  const add = () => {
-    const newPost = [{
-      text: text,
-      image: image, 
-    }];
-    axios.post("https://reactecomapi.onrender.com/post/posting",newPost).then((response) => {
-        console.log(response.data);
+  const add = (e) => {
+    e.preventDefault()
+    console.log("button clicked")
+    if(!postdata.text && !postdata.imageUrls ){
+      console.log("error")
+    }
+    const id=localStorage.getItem("userId")
+    console.log(id)
+    const formdata = new FormData()
+    formdata.append("image",postdata.imageUrls)
+    formdata.append("text",postdata.text)
+    formdata.append("userId",id)
+    axios.post("https://reactecomapi.onrender.com/post/posting",formdata).then((response) => {
+      console.log(response.data);
+      setShowAddPostForm(false);
       }).catch((error )=> {
         console.error(error);
       });
   };
 
+    useEffect(()=>{
+      axios.get("https://reactecomapi.onrender.com/post/allpost").then((response)=>{
+        console.log(response.data)
+        setPosts(response.data)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    },[])
+  
    const handleSubmit=()=>{
     const id=localStorage.getItem("userId")
    axios.put(`https://reactecomapi.onrender.com/post/updateprofile/${id}`,{bio: bio,username: newusername,}).then((response)=>{
@@ -57,9 +78,6 @@ const SidebarProfile = () => {
        console.log(error)
    })
    }
-
-
-  
 
   return (
     <div className="sidebar-profile">
@@ -93,100 +111,55 @@ const SidebarProfile = () => {
         <button className="btn btn-primary btn-sm " style={{width:'300px'}}  onClick={() => setShowEditPostForm(!showEditPostForm)}>Edit Profile</button>
         {showEditPostForm && (
         <div className="p-3">
-          <textarea className="form-control mb-2" placeholder="Write a bio..." value={bio} onChange={(e) => setBio(e.target.value)}/>
-          <input type='text' className="form-control mb-2" placeholder="Write a bio..." value={newusername} onChange={(e) => setusername(e.target.value)}/>
-         
-
-          <button className="btn btn-success w-100" onClick={ handleSubmit}>Save Bio</button>
+          <textarea className="form-control mb-2" placeholder="bio..." value={bio} onChange={(e) => setBio(e.target.value)}/>
+          <input type='text' className="form-control mb-2" placeholder="edit username" value={newusername} onChange={(e) => setusername(e.target.value)}/>
+         <button className="btn btn-success w-100" onClick={handleSubmit}>save</button> 
         </div>
       )}
-        <button className="btn btn-outline-danger btn-sm " style={{width:'300px'}}><a href='/login'>Logout</a></button>
+      <button className="btn btn-secondary btn-sm " style={{width:'300px'}}  onClick={() => setShowAddPostForm(!showAddPostForm)}>Add</button>
+{showAddPostForm && (
+  <div className="p-3">
+    <label className="form-label">Select Post Type</label>
+    <select className="form-select mb-3" value={postType} onChange={(e) => setPostType(e.target.value)}>
+      <option value="text">Add Text</option>
+      <option value="image">Add Image</option>
+      <option value="both">Add Both</option>
+    </select>
+    {(postType === 'text' || postType === 'both') && (
+      <textarea className="form-control mb-2" placeholder="Post text" name='text' onChange={handlechange}/>
+    )}
+    {(postType === 'image' || postType === 'both') && (
+      <>
+        <input type="file" accept="image/*" name='image' onChange={handleFileChange} className="form-control mb-2" />
+      </>
+    )}
+    <button className="btn btn-success " onClick={(e)=>add(e)} style={{width:'300px'}}>Create Post</button>
+  </div>
+)}
+     <button className="btn btn-outline-danger btn-sm " style={{width:'300px',color:'black',textDecoration:'none'}}><a href='/login'>Logout</a></button>
       </div>
       <hr />
       </div>
-    ))}
-{/* <div>
-<div className="story-highlights">
-  <figure>
-    <img src="src/Images/post1.jpg" alt="Highlight 1" />
-    <figcaption>Highlight 1</figcaption>
-  </figure>
-  <figure>
-    <img src="src/Images/post2.jpg" alt="Highlight 2" />
-    <figcaption>Highlight 2</figcaption>
-  </figure>
-  <figure>
-    <img src="src/Images/post3.jpg" alt="Highlight 3" />
-    <figcaption>Highlight 3</figcaption>
-  </figure>
-  <figure>
-    <img src="src/Images/post4.jpeg" alt="Highlight 4" />
-    <figcaption>Highlight 4</figcaption>
-  </figure>
+    ))} 
+
+<div className="d-flex flex-wrap justify-content-left gap-3">
+{posts.map((items)=>(
+  <div>
+  <Card style={{ width: '16rem',height:'16rem' }}>{<br></br>}
+  <div className="text-center"><Card.Img variant="top" src={items.image}/></div>
+      <Card.Body>
+        <Card.Title>{items.text}</Card.Title>
+        <div className="d-flex gap-2">
+        <button className="btn btn-sm btn-outline-primary" style={{width:'80px',border:'none'}}>👍{items.like}</button>
+        <button className="btn btn-sm btn-outline-secondary" style={{width:'80px',border:'none'}}>💬{items.comment}</button>
+        </div>
+      </Card.Body>
+    </Card>
+  </div>
+))}
 </div>
-<div className="photo-grid">
-  <div className="photo-card">
-    <div className="image-container">
-      <img src="src/Images/post1.jpg" alt="Post 1" />
-    </div>
-    <div className="photo-meta">
-      <span className="likes">❤️ 120</span>
-      <span className="comments">💬 45</span>
-    </div>
-  </div>
-  <div className="photo-card">
-    <div className="image-container">
-      <img src="src/Images/post2.jpg" alt="Post 1" />
-    </div>
-    <div className="photo-meta">
-      <span className="likes">❤️ 120</span>
-      <span className="comments">💬 45</span>
-    </div> 
-  </div>
-  <div className="photo-card">
-    <div className="image-container">
-      <img src="src/Images/post3.jpg" alt="Post 1" />
-    </div>
-    <div className="photo-meta">
-      <span className="likes">❤️ 120</span>
-      <span className="comments">💬 45</span>
-    </div>
-  </div>
-  <div className="photo-card">
-    <div className="image-container">
-      <img src="src/Images/post4.jpeg" alt="Post 1" />
-    </div>
-    <div className="photo-meta">
-      <span className="likes">❤️ 120</span>
-      <span className="comments">💬 45</span>
-    </div>
-  </div>
-  <div className="photo-card">
-    <div className="image-container">
-      <img src="src/Images/post6.jpeg" alt="Post 1" />
-    </div>
-    <div className="photo-meta">
-      <span className="likes">❤️ 120</span>
-      <span className="comments">💬 45</span>
-    </div>
-  </div>
-  </div>
-  </div>
-  </div>
-  </div> */}
-  
-      <button  onClick={() => setShowAddPostForm(!showAddPostForm)} style={{width:'200px'}}>Add</button>
-      {showAddPostForm && (
-          <div className="p-3">
-            <textarea className="form-control mb-2" placeholder="Post text" value={text} onChange={(e) => setText(e.target.value)}/>
-            <input type="file" accept="image/*" onChange={handleFileChange}/>
-      {image && <img src={image} alt="Preview" width="150" />}
-            <button className="btn btn-success w-100" onClick={add}>Create Post</button>
-          </div>
-        )}
-      <button style={{width:'200px'}}>view</button>
-    </div>
-    </div> 
+</div>
+</div> 
 );
 };
 export default SidebarProfile;
