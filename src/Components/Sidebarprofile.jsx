@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Components/Sidebarprofile.css'
 import axios from 'axios';
 import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
 const SidebarProfile = () => {
@@ -79,6 +78,16 @@ const SidebarProfile = () => {
    })
    }
 
+   const clicklike=(postId)=>{
+    const id=localStorage.getItem("userId")
+    axios.put(`https://reactecomapi.onrender.com/post/like/${postId}`,{id}).then((response)=>{
+      console.log(response)
+      alert("liked")
+    }).catch((error)=>{
+      console.log(error)
+    })
+   }
+
   return (
     <div className="sidebar-profile">
     <div className="card shadow-sm p-3 mb-4 bg-white rounded">
@@ -145,12 +154,12 @@ const SidebarProfile = () => {
 <div className="d-flex flex-wrap justify-content-left gap-3">
 {posts.map((items)=>(
   <div>
-  <Card style={{ width: '16rem',height:'16rem' }}>{<br></br>}
-  <div className="text-center"><Card.Img variant="top" src={items.image}/></div>
+  <Card key={items._id} style={{ width: '16rem',height:'18rem' }}>{<br></br>}
+  <div className="text-center"><Card.Img  src={items.image} style={{ borderRadius: '0',height:'150px',width:'200px' }}/></div>
       <Card.Body>
         <Card.Title>{items.text}</Card.Title>
         <div className="d-flex gap-2">
-        <button className="btn btn-sm btn-outline-primary" style={{width:'80px',border:'none'}}>👍{items.like}</button>
+        <button className="btn btn-sm btn-outline-primary" style={{width:'80px',border:'none'}} onClick={()=>clicklike(items._id)}>👍{items.like}</button>
         <button className="btn btn-sm btn-outline-secondary" style={{width:'80px',border:'none'}}>💬{items.comment}</button>
         </div>
       </Card.Body>
