@@ -2,12 +2,18 @@ import React from 'react';
 import Navbar from '../Components/Navbar';
 import Sidebar from '../Components/Sidebar';
 import Post from '../Components/Post';
-// import { useState } from 'react';
+import { useState,useEffect } from 'react';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Pages/Home.css'
 
-const Home = () => {
 
+const Home = () => {
+  const [post, setPosts] = useState([]);
+  const[showAddComment,setShowAddComment]=useState(false)
+  const[comments,setComments]=useState('')
+  const [activePostId, setActivePostId] = useState(null);
+   
   const posts = [
     {
       _id: 1,
@@ -30,14 +36,62 @@ const Home = () => {
       time: '3h ago',
     },
   ];
- 
+    useEffect(()=>{
+        axios.get("https://reactecomapi.onrender.com/post/allpost").then((response)=>{
+          console.log(response.data)
+          setPosts(response.data)
+        }).catch((error)=>{
+          console.log(error)
+        })
+      },[])
+
+      const clicklike=(postId)=>{
+        const id=localStorage.getItem("userId")
+        axios.put(`https://reactecomapi.onrender.com/post/like/${postId}`,{id}).then((response)=>{
+          console.log(response)
+          alert("post liked....")
+        }).catch((error)=>{
+          console.log(error)
+        })
+       }
+
+       const handlechange=(postId,e)=>{
+       setComments({...comments,[postId]:e.target.value });
+       setActivePostId(postId);
+      };
+       const comment=(postId)=>{
+       const id=localStorage.getItem("userId")
+       console.log(id)
+       const text=comments[postId]
+       console.log(text)
+       axios.post(`https://reactecomapi.onrender.com/post/comment/${postId}`,{id},{text}).then((response)=>{
+       console.log(response)
+       setShowAddComment(false) 
+       setActivePostId(null)
+        }).catch((error)=>{
+          console.log(error)
+        })
+       }
+
+       const followUser=(id,e)=>{
+       const currentUserId=localStorage.getItem("userId")
+       axios.put(`https://reactecomapi.onrender.com/post/user/${id}/follow`,{ currentUserId}).then((response)=>{
+       console.log(response)
+       if (e && e.target) {
+        e.target.textContent = 'Following';
+      }
+        }).catch((error)=>{
+          console.log(error)
+        })
+      }
+    
   return (
     <>
       <Navbar />
       <div className="container-fluid mt-3">
         <div className="row">
           <Sidebar />
-          <div className="col-md-6">
+          <div className="col-md-8">
             {posts.map((post) => (
               <div key={post._id} className="card mb-3 shadow-sm">
                 <div className="card-body">
@@ -47,9 +101,6 @@ const Home = () => {
                     </div>
                     <strong>{post.username}</strong>{<br></br>}
                   <button className="flow-button mt-2" >Follow</button>
-                  <div className="d-flex justify-content-end">
-                  <p>{post.time}</p>
-                </div>
                 </div>
                   <p className="card-text">{post.content}</p>
                   {post.image && (
@@ -64,13 +115,48 @@ const Home = () => {
               </div>
             ))}
           </div>
-          <div className="col-md-3 d-none d-md-block">
+          <div className="container-fluid mt-9">
+        <div className="row">
+          <div className="col-md-8 margin">
+{post.map((items)=>(
+  <div>
+    <div key={items._id} className="card mb-3 shadow-sm">
+                <div className="card-body">
+                  <div className="d-flex align-items-center mb-2 ">
+                  <div className="avatar bg-secondary text-white rounded-circle me-2" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {items.userId.username.charAt(0).toUpperCase()}
+                    </div>
+                    <strong>{items.userId.username}</strong>{<br></br>}
+                  <button className="flow-button mt-2"  onClick={(e) => followUser(items.userId._id,e)} >Follow</button>
+                </div>
+                  <p className="card-text">{items.text}</p>
+                  {items.image && (
+                    <img src={items.image} alt="Post" className="img-fluid rounded" style={{width:'200px',height:'150px'}}/>
+                  )}{<br></br>}
+                 <div className="d-flex gap-3 mt-3">
+                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)}>👍 Like</button>
+                  <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(!showAddComment)} >💬 Comment</button>
+                  {showAddComment&& (
+                    <div>
+                    {activePostId === items._id && (<p style={{ color: 'green' }}>Typing</p>)}
+                    <textarea value={comments[items._id] || ""} placeholder="Write comment..." onChange={(e) => handlechange(items._id, e)}/>
+                   <>
+                    <button className="btn btn-success"  onClick={()=>comment(items._id)}>Add Comment</button>
+                   </>
+                   </div>
+                  )}
+                  <button className="btn btn-sm btn-outline-success">🔄 Share</button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
+    </div>
+  </div>
+</div>
+</div>
     </>
   );
 };
 export default Home;
-
-

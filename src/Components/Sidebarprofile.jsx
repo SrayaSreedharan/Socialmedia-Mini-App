@@ -3,12 +3,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Components/Sidebarprofile.css'
 import axios from 'axios';
 import { useState } from 'react';
-import Card from 'react-bootstrap/Card';
 
 const SidebarProfile = () => {
   const[data,setData]=useState([])
   const[postdata,setPostdata]=useState({})
-  const [posts, setPosts] = useState([]);
   const [postType, setPostType] = useState('both');
   const [showAddPostForm, setShowAddPostForm] = useState(false);
   const [showEditPostForm, setShowEditPostForm] = useState(false);
@@ -55,17 +53,8 @@ const SidebarProfile = () => {
       });
   };
 
-    useEffect(()=>{
-      axios.get("https://reactecomapi.onrender.com/post/allpost").then((response)=>{
-        console.log(response.data)
-        setPosts(response.data)
-      }).catch((error)=>{
-        console.log(error)
-      })
-    },[])
-  
    const handleSubmit=()=>{
-    const id=localStorage.getItem("userId")
+   const id=localStorage.getItem("userId")
    axios.put(`https://reactecomapi.onrender.com/post/updateprofile/${id}`,{bio: bio,username: newusername,}).then((response)=>{
        console.log(response)
        setBio(response)
@@ -77,30 +66,16 @@ const SidebarProfile = () => {
        console.log(error)
    })
    }
-
-   const clicklike=(postId)=>{
-    const id=localStorage.getItem("userId")
-    axios.put(`https://reactecomapi.onrender.com/post/like/${postId}`,{id}).then((response)=>{
-      console.log(response)
-      alert("liked")
-    }).catch((error)=>{
-      console.log(error)
-    })
-   }
-
   return (
     <div className="sidebar-profile">
     <div className="card shadow-sm p-3 mb-4 bg-white rounded">
-      
       {data&&data.map((item)=>(
         <div>
         <div className="text-center">
         <img src={item.profilePic}   width="100" height="100"/>
-
         <h5>{item.username}</h5>
         {newusername && <h5>{newusername} </h5>}
         <p>{item.bio}</p>
-      
       </div>
       <div className="d-flex justify-content-around text-center mb-3">
         <div>
@@ -150,24 +125,7 @@ const SidebarProfile = () => {
       <hr />
       </div>
     ))} 
-
-<div className="d-flex flex-wrap justify-content-left gap-3">
-{posts.map((items)=>(
-  <div>
-  <Card key={items._id} style={{ width: '16rem',height:'18rem' }}>{<br></br>}
-  <div className="text-center"><Card.Img  src={items.image} style={{ borderRadius: '0',height:'150px',width:'200px' }}/></div>
-      <Card.Body>
-        <Card.Title>{items.text}</Card.Title>
-        <div className="d-flex gap-2">
-        <button className="btn btn-sm btn-outline-primary" style={{width:'80px',border:'none'}} onClick={()=>clicklike(items._id)}>👍{items.like}</button>
-        <button className="btn btn-sm btn-outline-secondary" style={{width:'80px',border:'none'}}>💬{items.comment}</button>
-        </div>
-      </Card.Body>
-    </Card>
   </div>
-))}
-</div>
-</div>
 </div> 
 );
 };
