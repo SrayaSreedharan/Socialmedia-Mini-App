@@ -17,7 +17,7 @@ const Home = () => {
   return storedLikes ? JSON.parse(storedLikes) : [];
   });
   const [commentPosts, setcommentPosts] = useState(() => {
-  const storedcomment = localStorage.getItem('commented');
+  const storedcomment = localStorage.getItem('[commentPosts');
   return storedcomment ? JSON.parse(storedcomment) : [];
   });
  
@@ -85,7 +85,7 @@ const Home = () => {
         }).catch((error)=>{
           console.log(error)
         })
-       }
+    }
 
        const followUser=(id)=>{
        const currentUserId=localStorage.getItem("userId")
