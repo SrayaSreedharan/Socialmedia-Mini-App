@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Components/Sidebarprofile.css'
 import axios from 'axios';
 import { useState } from 'react';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 
 const SidebarProfile = () => {
   const[data,setData]=useState([])
@@ -12,6 +14,7 @@ const SidebarProfile = () => {
   const [showEditPostForm, setShowEditPostForm] = useState(false);
   const [bio, setBio] = useState('');
   const [newusername, setusername] = useState(''); 
+  const [post, setPosts] = useState([]);
   
   useEffect(()=>{
     const id=localStorage.getItem("userId")
@@ -53,18 +56,36 @@ const SidebarProfile = () => {
       });
   };
 
+   useEffect(()=>{
+     const id=localStorage.getItem("userId")
+      axios.get(`https://reactecomapi.onrender.com/post/userposts/${id}`).then((response)=>{
+      console.log(response.data)
+      setPosts(response.data)
+      }).catch((error)=>{
+      console.log(error)
+      })
+      },[])
+
    const handleSubmit=()=>{
    const id=localStorage.getItem("userId")
    axios.put(`https://reactecomapi.onrender.com/post/updateprofile/${id}`,{bio: bio,username: newusername,}).then((response)=>{
        console.log(response)
        setBio(response)
-      //  const filtered= data.filter((item)=>{
-      //   return item._id !== id
-      // })
-      // setData(filtered)
    }).catch((error)=>{
        console.log(error)
    })
+   }
+
+   const deletes=(postId)=>{
+    axios.delete(`https://reactecomapi.onrender.com/post/delposting/${postId}`).then((response)=>{
+      console.log(response)
+        const filtered= post.filter((item)=>{
+        return item._id !== postId
+      })
+      setPosts(filtered)
+    }).catch((error)=>{
+      console.log(error)
+    })
    }
   return (
     <div className="sidebar-profile">
@@ -125,6 +146,27 @@ const SidebarProfile = () => {
       <hr />
       </div>
     ))} 
+  <div className='d-flex flex-wrap gap-3 userpost'>
+    {post.map((data)=>(
+      <Card style={{ width: '18rem' }}>
+      <Card.Body>
+        <Card.Text>
+          {data.updatedAt}
+        </Card.Text>
+        <Card.Text>
+          {data.text}
+        </Card.Text>
+         <Card.Img variant="top" src={data.image} style={{ borderRadius:'0px',height:'150px',width:'200px'}}/>
+         <div className="d-flex">
+        <button className="btn btn-sm btn-outline-primary" style={{width:'90px',border:'none'}}>👍 Like</button>
+         <button className="btn btn-sm btn-outline-primary" style={{width:'140px',border:'none'}}>💬 comment</button>
+         <button className="btn btn-sm btn-outline-primary" style={{width:'100px',border:'none',color:'red'}} onClick={()=>deletes(data._id)}>delete</button>
+         </div>
+      </Card.Body>
+       
+    </Card>
+    ))}
+    </div>
   </div>
 </div> 
 );

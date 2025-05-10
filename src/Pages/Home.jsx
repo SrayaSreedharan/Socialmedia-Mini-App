@@ -17,7 +17,7 @@ const Home = () => {
   return storedLikes ? JSON.parse(storedLikes) : [];
   });
   const [commentPosts, setcommentPosts] = useState(() => {
-  const storedcomment = localStorage.getItem('[commentPosts');
+  const storedcomment = localStorage.getItem('commentPosts');
   return storedcomment ? JSON.parse(storedcomment) : [];
   });
  
@@ -149,7 +149,8 @@ const Home = () => {
                     <img src={items.image} alt="Post" className="img-fluid rounded" style={{width:'200px',height:'150px'}}/>
                   )}{<br></br>}
                  <div className="d-flex gap-3 mt-3">
-                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)}> {likedPosts.includes(items._id) ? "Liked❤️" : "👍 Like"}</button>
+                 
+                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)} style={{backgroundColor: likedPosts.includes(items._id) ? "green" : "#ffffff",color:'black'}}> {likedPosts.includes(items._id) ? "👍Liked" : "👍 Like"}</button>
                   <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} >💬 {commentPosts.includes(items._id) ? "commented" : "comment"}</button>
                   {showAddComment === index&& (
                     <div key={index}>
