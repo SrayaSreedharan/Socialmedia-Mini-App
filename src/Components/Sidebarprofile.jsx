@@ -15,6 +15,8 @@ const SidebarProfile = () => {
   const [bio, setBio] = useState('');
   const [newusername, setusername] = useState(''); 
   const [post, setPosts] = useState([]);
+  const[showmenu,setShowmenu]=useState(false)
+  const[showedit,setShowedit]=useState(false)
   
   useEffect(()=>{
     const id=localStorage.getItem("userId")
@@ -87,6 +89,18 @@ const SidebarProfile = () => {
       console.log(error)
     })
    }
+
+   const edit=(postId)=>{
+    const newtext = {
+    text: "New post content",  
+   
+  };
+    axios.put(`https://reactecomapi.onrender.com/post/editpost/${postId}`,{text:newtext}).then((response)=>{
+      console.log(response)
+    }).catch((error)=>{
+      console.log(error)
+    })
+   }
   return (
     <div className="sidebar-profile">
     <div className="card shadow-sm p-3 mb-4 bg-white rounded">
@@ -153,6 +167,20 @@ const SidebarProfile = () => {
         <Card.Text>
           {data.updatedAt}
         </Card.Text>
+        <button className="btn btn-sm " style={{width:'90px',border:'none',marginLeft:'200px',marginTop:'-90px'}}onClick={() => setShowmenu(!showmenu)}>☰ </button>
+        {showmenu&&(
+          <div>
+          <button className="btn btn-sm btn-outline-primary" style={{width:'100px',border:'none',color:'red'}} onClick={()=>setShowedit(!showedit)}>EDIT TEXT</button>
+         {showedit&&(
+          <div>
+          <input type='text'></input>
+          <button className="btn btn-success " onClick={()=>edit(data._id)} style={{width:'70px'}}>save</button>
+          </div>
+         )}
+         
+         <button className="btn btn-sm btn-outline-primary" style={{width:'100px',border:'none',color:'red'}} onClick={()=>deletes(data._id)}>DELETE</button>
+            </div>
+        )}
         <Card.Text>
           {data.text}
         </Card.Text>
@@ -160,10 +188,8 @@ const SidebarProfile = () => {
          <div className="d-flex">
         <button className="btn btn-sm btn-outline-primary" style={{width:'90px',border:'none'}}>👍 Like</button>
          <button className="btn btn-sm btn-outline-primary" style={{width:'140px',border:'none'}}>💬 comment</button>
-         <button className="btn btn-sm btn-outline-primary" style={{width:'100px',border:'none',color:'red'}} onClick={()=>deletes(data._id)}>delete</button>
          </div>
       </Card.Body>
-       
     </Card>
     ))}
     </div>
