@@ -4,7 +4,6 @@ import '../Components/Sidebarprofile.css'
 import axios from 'axios';
 import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
 
 const SidebarProfile = () => {
   const[data,setData]=useState([])
@@ -91,11 +90,7 @@ const SidebarProfile = () => {
    }
 
    const edit=(postId)=>{
-    const newtext = {
-    text: "New post content",  
-   
-  };
-    axios.put(`https://reactecomapi.onrender.com/post/editpost/${postId}`,{text:newtext}).then((response)=>{
+    axios.put(`https://reactecomapi.onrender.com/post/editpost/${postId}`).then((response)=>{
       console.log(response)
     }).catch((error)=>{
       console.log(error)
@@ -173,11 +168,10 @@ const SidebarProfile = () => {
           <button className="btn btn-sm btn-outline-primary" style={{width:'100px',border:'none',color:'red'}} onClick={()=>setShowedit(!showedit)}>EDIT TEXT</button>
          {showedit&&(
           <div>
-          <input type='text'></input>
+          <input type='text' value={data.text}></input>
           <button className="btn btn-success " onClick={()=>edit(data._id)} style={{width:'70px'}}>save</button>
           </div>
          )}
-         
          <button className="btn btn-sm btn-outline-primary" style={{width:'100px',border:'none',color:'red'}} onClick={()=>deletes(data._id)}>DELETE</button>
             </div>
         )}
