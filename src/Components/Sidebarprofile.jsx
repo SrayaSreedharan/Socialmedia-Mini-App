@@ -11,17 +11,22 @@ const SidebarProfile = () => {
   const [postType, setPostType] = useState('both');
   const [showAddPostForm, setShowAddPostForm] = useState(false);
   const [showEditPostForm, setShowEditPostForm] = useState(false);
-  const [bio, setBio] = useState('');
-  const [newusername, setusername] = useState(''); 
+  // const [bio, setBio] = useState('');
+  // const [newusername, setusername] = useState(''); 
+  // const[profilePic,setProfilepic]= useState(''); 
+  const[editdata,setEditdata]=useState({})
+  const[upedit,setUpedit]=useState([])
   const [post, setPosts] = useState([]);
   const[showmenu,setShowmenu]=useState(false)
   const[showedit,setShowedit]=useState(false)
+  
   
   useEffect(()=>{
     const id=localStorage.getItem("userId")
     axios.get(`https://reactecomapi.onrender.com/socioauth/user/${id}`).then((response)=>{
       console.log(response.data)
       setData([response.data])
+
     }).catch((error)=>{
       console.log(error)
     });
@@ -67,11 +72,30 @@ const SidebarProfile = () => {
       })
       },[])
 
+    const handleschange=(e)=>{
+    setEditdata({...editdata,[e.target.name]:e.target.value})
+    console.log(editdata)
+    }
+
+    const filechange = (e) => {
+    console.log(e.target.files[0])
+    setEditdata({...editdata,profilePic:e.target.files[0]})
+    console.log(editdata)
+  };
+
    const handleSubmit=()=>{
    const id=localStorage.getItem("userId")
-   axios.put(`https://reactecomapi.onrender.com/post/updateprofile/${id}`,{bio: bio,username: newusername,}).then((response)=>{
+   const formdata = new FormData()
+    formdata.append("bio",editdata.bio)
+    formdata.append("username",editdata.username)
+    formdata.append("profilePic",editdata.profilePic)
+   axios.put(`https://reactecomapi.onrender.com/post/updateprofile/${id}`,formdata).then((response)=>{
        console.log(response)
-       setBio(response)
+       setShowEditPostForm(false)
+       const filtered=upedit.filter((items)=>{
+        return items._id !== formdata
+       })
+       setUpedit(filtered)
    }).catch((error)=>{
        console.log(error)
    })
@@ -104,7 +128,6 @@ const SidebarProfile = () => {
         <div className="text-center">
         <img src={item.profilePic}   width="100" height="100"/>
         <h5>{item.username}</h5>
-        {newusername && <h5>{newusername} </h5>}
         <p>{item.bio}</p>
       </div>
       <div className="d-flex justify-content-around text-center mb-3">
@@ -113,11 +136,11 @@ const SidebarProfile = () => {
           <div className="text-muted" style={{ fontSize: '0.85rem' }}>Posts</div>
         </div>
         <div>
-          <strong>{item.followers}</strong>
+          <strong>{item.followers.length}</strong>
           <div className="text-muted" style={{ fontSize: '0.85rem' }}>followers</div>
         </div>
         <div>
-          <strong>{item.following}</strong>
+          <strong>{item.following.length}</strong>
           <div className="text-muted" style={{ fontSize: '0.85rem' }}>following</div>
         </div>
       </div>
@@ -125,8 +148,9 @@ const SidebarProfile = () => {
         <button className="btn btn-primary btn-sm " style={{width:'300px'}}  onClick={() => setShowEditPostForm(!showEditPostForm)}>Edit Profile</button>
         {showEditPostForm && (
         <div className="p-3">
-          <textarea className="form-control mb-2" placeholder="bio..." value={bio} onChange={(e) => setBio(e.target.value)}/>
-          <input type='text' className="form-control mb-2" placeholder="edit username" value={newusername} onChange={(e) => setusername(e.target.value)}/>
+          <textarea className="form-control mb-2" placeholder="bio..." name='bio' onChange={handleschange}/>
+          <input type='text' className="form-control mb-2" placeholder="edit username" name='username' onChange={handleschange}/>
+          <input type='file'  name='profilePic' onChange={filechange}></input>
          <button className="btn btn-success w-100" onClick={handleSubmit}>save</button> 
         </div>
       )}

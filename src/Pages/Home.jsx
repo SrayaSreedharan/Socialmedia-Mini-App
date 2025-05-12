@@ -91,6 +91,7 @@ const Home = () => {
        const currentUserId=localStorage.getItem("userId")
        axios.put(`https://reactecomapi.onrender.com/post/user/${id}/follow`,{ currentUserId}).then((response)=>{
        console.log(response)
+       
         }).catch((error)=>{
           console.log(error)
         })
