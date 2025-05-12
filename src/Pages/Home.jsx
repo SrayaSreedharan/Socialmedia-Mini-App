@@ -20,6 +20,10 @@ const Home = () => {
   const storedcomment = localStorage.getItem('commentPosts');
   return storedcomment ? JSON.parse(storedcomment) : [];
   });
+  const [followposts, setfollowPosts] = useState(() => {
+  const storedfollow = localStorage.getItem('followPosts');
+  return storedfollow ? JSON.parse(storedfollow) : [];
+  });
  
   const posts = [
     {
@@ -88,10 +92,11 @@ const Home = () => {
     }
 
        const followUser=(id)=>{
-       const currentUserId=localStorage.getItem("userId")
+        const currentUserId=localStorage.getItem("userId")
+       setfollowPosts((prev) =>
+       prev.includes(id) ? prev.filter(userId => userId !== id) : [...prev, id]);
        axios.put(`https://reactecomapi.onrender.com/post/user/${id}/follow`,{ currentUserId}).then((response)=>{
        console.log(response)
-       
         }).catch((error)=>{
           console.log(error)
         })
@@ -139,18 +144,21 @@ const Home = () => {
     <div key={items._id} className="card mb-3 shadow-sm">
                 <div className="card-body">
                   <div className="d-flex align-items-center mb-2 ">
-                  <div className="avatar bg-secondary text-white rounded-circle me-2" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {items.userId.username.charAt(0).toUpperCase()}
-                    </div>
-                    <strong>{items.userId.username}</strong>{<br></br>}
-                  <button className="flow-button mt-2"  onClick={() => followUser(items.userId._id)}>Follow</button>
+                  {items.userId?.profilePic ? (
+                  <img src={items.userId.profilePic} className="rounded-circle me-2" style={{ width: '40px', height: '40px', objectFit: 'cover' }} alt="Profile"/>
+                ) : (
+                  <div className="bg-secondary text-white rounded-circle me-2 d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px', fontWeight: 'bold', fontSize: '1rem' }}>
+                    {items.userId?.username?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <strong>{items.userId.username}</strong>{<br></br>}
+                <button className="flow-button mt-2"  onClick={()=>followUser(items.userId._id)}> {followposts.includes(items._id) ? "following" : "follow"}</button>
                 </div>
                   <p className="card-text">{items.text}</p>
                   {items.image && (
                     <img src={items.image} alt="Post" className="img-fluid rounded" style={{width:'200px',height:'150px'}}/>
                   )}{<br></br>}
                  <div className="d-flex gap-3 mt-3">
-                 
                   <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)} style={{backgroundColor: likedPosts.includes(items._id) ? "green" : "#ffffff",color:'black'}}> {likedPosts.includes(items._id) ? "👍Liked" : "👍 Like"}</button>
                   <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} >💬 {commentPosts.includes(items._id) ? "commented" : "comment"}</button>
                   {showAddComment === index&& (

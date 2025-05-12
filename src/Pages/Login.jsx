@@ -51,7 +51,6 @@ const Login = () => {
         <div className="right2">
           <form className='frrm'>
           <h1>Login</h1>
-          
             <label style={{color:"red"}}>{error.email}</label>
             <input type='text' name="email" placeholder='Email' onChange={handlechange}/>{<br></br>}
             <label style={{color:"red"}}>{error.password}</label>

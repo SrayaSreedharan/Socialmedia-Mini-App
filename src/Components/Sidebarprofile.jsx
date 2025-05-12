@@ -10,23 +10,18 @@ const SidebarProfile = () => {
   const[postdata,setPostdata]=useState({})
   const [postType, setPostType] = useState('both');
   const [showAddPostForm, setShowAddPostForm] = useState(false);
-  const [showEditPostForm, setShowEditPostForm] = useState(false);
-  // const [bio, setBio] = useState('');
-  // const [newusername, setusername] = useState(''); 
-  // const[profilePic,setProfilepic]= useState(''); 
+  const [showEditPostForm, setShowEditPostForm] = useState(false); 
   const[editdata,setEditdata]=useState({})
-  const[upedit,setUpedit]=useState([])
-  const [post, setPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
   const[showmenu,setShowmenu]=useState(false)
   const[showedit,setShowedit]=useState(false)
-  
+  const [editText, setEditText] = useState("");
   
   useEffect(()=>{
     const id=localStorage.getItem("userId")
     axios.get(`https://reactecomapi.onrender.com/socioauth/user/${id}`).then((response)=>{
       console.log(response.data)
       setData([response.data])
-
     }).catch((error)=>{
       console.log(error)
     });
@@ -86,16 +81,13 @@ const SidebarProfile = () => {
    const handleSubmit=()=>{
    const id=localStorage.getItem("userId")
    const formdata = new FormData()
-    formdata.append("bio",editdata.bio)
-    formdata.append("username",editdata.username)
-    formdata.append("profilePic",editdata.profilePic)
+   formdata.append("bio",editdata.bio)
+   formdata.append("username",editdata.username)
+   formdata.append("profilePic",editdata.profilePic)
    axios.put(`https://reactecomapi.onrender.com/post/updateprofile/${id}`,formdata).then((response)=>{
-       console.log(response)
+       console.log(response.data)
        setShowEditPostForm(false)
-       const filtered=upedit.filter((items)=>{
-        return items._id !== formdata
-       })
-       setUpedit(filtered)
+       setData([response.data])
    }).catch((error)=>{
        console.log(error)
    })
@@ -104,7 +96,7 @@ const SidebarProfile = () => {
    const deletes=(postId)=>{
     axios.delete(`https://reactecomapi.onrender.com/post/delposting/${postId}`).then((response)=>{
       console.log(response)
-        const filtered= post.filter((item)=>{
+        const filtered= posts.filter((item)=>{
         return item._id !== postId
       })
       setPosts(filtered)
@@ -114,8 +106,9 @@ const SidebarProfile = () => {
    }
 
    const edit=(postId)=>{
-    axios.put(`https://reactecomapi.onrender.com/post/editpost/${postId}`).then((response)=>{
-      console.log(response)
+    axios.put(`https://reactecomapi.onrender.com/post/editpost/${postId}`,{ text: editText }).then((response)=>{
+      console.log(response.data)
+      setEditText(response.data)
     }).catch((error)=>{
       console.log(error)
     })
@@ -126,13 +119,13 @@ const SidebarProfile = () => {
       {data&&data.map((item)=>(
         <div>
         <div className="text-center">
-        <img src={item.profilePic}   width="100" height="100"/>
+        <img src={item.profilePic}   width="100" height="100" className='center'/>
         <h5>{item.username}</h5>
         <p>{item.bio}</p>
       </div>
       <div className="d-flex justify-content-around text-center mb-3">
         <div>
-          <strong>6</strong>
+          <strong>{posts.length}</strong>
           <div className="text-muted" style={{ fontSize: '0.85rem' }}>Posts</div>
         </div>
         <div>
@@ -180,19 +173,20 @@ const SidebarProfile = () => {
       </div>
     ))} 
   <div className='d-flex flex-wrap gap-3 userpost'>
-    {post.map((data)=>(
+    {posts.map((data,index)=>(
+      <div key={index} >
       <Card style={{ width: '18rem' }}>
       <Card.Body>
         <Card.Text>
           {data.updatedAt}
         </Card.Text>
-        <button className="btn btn-sm " style={{width:'90px',border:'none',marginLeft:'200px',marginTop:'-90px'}}onClick={() => setShowmenu(!showmenu)}>☰ </button>
-        {showmenu&&(
+        <button className="btn btn-sm " style={{width:'90px',border:'none',marginLeft:'200px',marginTop:'-90px'}}onClick={() => {setShowmenu(index),setEditText(data.text)}}>☰ </button>
+        {showmenu === index&& (        
           <div>
           <button className="btn btn-sm btn-outline-primary" style={{width:'100px',border:'none',color:'red'}} onClick={()=>setShowedit(!showedit)}>EDIT TEXT</button>
          {showedit&&(
           <div>
-          <input type='text' value={data.text}></input>
+          <input type='text' className='border border-black' name='text' value={editText} onChange={(e) => setEditText(e.target.value)} />
           <button className="btn btn-success " onClick={()=>edit(data._id)} style={{width:'70px'}}>save</button>
           </div>
          )}
@@ -202,13 +196,14 @@ const SidebarProfile = () => {
         <Card.Text>
           {data.text}
         </Card.Text>
-         <Card.Img variant="top" src={data.image} style={{ borderRadius:'0px',height:'150px',width:'200px'}}/>
+         <Card.Img variant="top" src={data.image} style={{ borderRadius:'0px',height:'150px',width:'200px',marginLeft:'20px'}}/>
          <div className="d-flex">
         <button className="btn btn-sm btn-outline-primary" style={{width:'90px',border:'none'}}>👍 Like</button>
          <button className="btn btn-sm btn-outline-primary" style={{width:'140px',border:'none'}}>💬 comment</button>
          </div>
       </Card.Body>
     </Card>
+     </div>
     ))}
     </div>
   </div>

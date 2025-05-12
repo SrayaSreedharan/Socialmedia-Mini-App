@@ -1,6 +1,5 @@
 import React from 'react';
 import { FaRegCircleUser } from "react-icons/fa6";
-
 const Post = ({ username, content, time , image ,image1}) => (
   <div className="card mb-4 shadow-sm">
     <div className="card-body">
