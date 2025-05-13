@@ -122,6 +122,7 @@ const Home = () => {
                     </div>
                     <strong>{post.username}</strong>{<br></br>}
                   <button className="flow-button mt-2" >Follow</button>
+                  <p>2/13/2025, 10:23:02 AM</p>{<br></br>}
                 </div>
                   <p className="card-text">{post.content}</p>
                   {post.image && (
@@ -153,6 +154,7 @@ const Home = () => {
                 )}
                 <strong>{items.userId.username}</strong>{<br></br>}
                 <button className="flow-button mt-2"  onClick={()=>followUser(items.userId._id)}> {followposts.includes(items._id) ? "following" : "follow"}</button>
+                {new Date(items.updatedAt).toLocaleString()}
                 </div>
                   <p className="card-text">{items.text}</p>
                   {items.image && (

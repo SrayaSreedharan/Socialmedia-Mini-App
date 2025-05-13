@@ -13,10 +13,10 @@ const SidebarProfile = () => {
   const [showEditPostForm, setShowEditPostForm] = useState(false); 
   const[editdata,setEditdata]=useState({})
   const [posts, setPosts] = useState([]);
-  const[showmenu,setShowmenu]=useState(false)
-  const[showedit,setShowedit]=useState(false)
+  const [menuPostId, setMenuPostId] = useState(null);
+  const [editingPostId, setEditingPostId] = useState(null);
   const [editText, setEditText] = useState("");
-  
+
   useEffect(()=>{
     const id=localStorage.getItem("userId")
     axios.get(`https://reactecomapi.onrender.com/socioauth/user/${id}`).then((response)=>{
@@ -52,6 +52,7 @@ const SidebarProfile = () => {
     axios.post("https://reactecomapi.onrender.com/post/posting",formdata).then((response) => {
       console.log(response.data);
       setShowAddPostForm(false);
+      setPostdata({});
       }).catch((error )=> {
         console.error(error);
       });
@@ -104,20 +105,25 @@ const SidebarProfile = () => {
       console.log(error)
     })
    }
-
-   const edit=(postId)=>{
-    axios.put(`https://reactecomapi.onrender.com/post/editpost/${postId}`,{ text: editText }).then((response)=>{
-      console.log(response.data)
-      setEditText(response.data)
-    }).catch((error)=>{
-      console.log(error)
+const edit = (postId) => {
+  axios.put(`https://reactecomapi.onrender.com/post/editpost/${postId}`, { text: editText }).then((response) => {
+    console.log(response.data)
+    const updatedPost = Array.isArray(response.data)? response.data.find((p) => p._id === postId): response.data;
+    const updatedPosts = posts.map((post) =>post._id === postId ? { ...post, text: updatedPost.text } : post);
+      setPosts(updatedPosts);
+      setEditingPostId(null);
+      setMenuPostId(null);
     })
-   }
-  return (
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+return (
     <div className="sidebar-profile">
     <div className="card shadow-sm p-3 mb-4 bg-white rounded">
       {data&&data.map((item)=>(
-        <div>
+        <div key={item._id}>
         <div className="text-center">
         <img src={item.profilePic}   width="100" height="100" className='center'/>
         <h5>{item.username}</h5>
@@ -173,41 +179,38 @@ const SidebarProfile = () => {
       </div>
     ))} 
   <div className='d-flex flex-wrap gap-3 userpost'>
-    {posts.map((data,index)=>(
-      <div key={index} >
+  {posts.map((data) => (
+    <div key={data._id}>
       <Card style={{ width: '18rem' }}>
-      <Card.Body>
-        <Card.Text>
-          {data.updatedAt}
-        </Card.Text>
-        <button className="btn btn-sm " style={{width:'90px',border:'none',marginLeft:'200px',marginTop:'-90px'}}onClick={() => {setShowmenu(index),setEditText(data.text)}}>☰ </button>
-        {showmenu === index&& (        
-          <div>
-          <button className="btn btn-sm btn-outline-primary" style={{width:'100px',border:'none',color:'red'}} onClick={()=>setShowedit(!showedit)}>EDIT TEXT</button>
-         {showedit&&(
-          <div>
-          <input type='text' className='border border-black' name='text' value={editText} onChange={(e) => setEditText(e.target.value)} />
-          <button className="btn btn-success " onClick={()=>edit(data._id)} style={{width:'70px'}}>save</button>
-          </div>
-         )}
-         <button className="btn btn-sm btn-outline-primary" style={{width:'100px',border:'none',color:'red'}} onClick={()=>deletes(data._id)}>DELETE</button>
+        <Card.Body>
+          <Card.Text>{new Date(data.updatedAt).toLocaleString()}</Card.Text>
+          <button className="btn btn-sm" style={{ width: '90px', border: 'none', marginLeft: '200px', marginTop: '-90px' }} onClick={() => {setMenuPostId(menuPostId === data._id ? null : data._id);setEditText(data.text);}}>☰</button>
+          {menuPostId === data._id && (
+            <div>
+              <button className="btn btn-sm btn-outline-primary" style={{ width: '100px', border: 'none', color: 'red' }} onClick={() => setEditingPostId(data._id)}>EDIT TEXT</button>
+              {editingPostId === data._id && (
+                <div>
+                  <input type="text" className="border border-black" name="text" value={editText} onChange={(e) => setEditText(e.target.value)}/>
+                  <button className="btn btn-success" onClick={() => edit(data._id)} style={{ width: '70px' }}>Save</button>
+                </div>
+              )}
+              <button className="btn btn-sm btn-outline-primary" style={{ width: '100px', border: 'none', color: 'red' }} onClick={() => deletes(data._id)}>DELETE</button>
             </div>
-        )}
-        <Card.Text>
-          {data.text}
-        </Card.Text>
-         <Card.Img variant="top" src={data.image} style={{ borderRadius:'0px',height:'150px',width:'200px',marginLeft:'20px'}}/>
-         <div className="d-flex">
-        <button className="btn btn-sm btn-outline-primary" style={{width:'90px',border:'none'}}>👍 Like</button>
-         <button className="btn btn-sm btn-outline-primary" style={{width:'140px',border:'none'}}>💬 comment</button>
-         </div>
-      </Card.Body>
-    </Card>
-     </div>
-    ))}
+          )}
+          <Card.Text>{data.text}</Card.Text>
+          {data.image && (<Card.Img variant="top" src={data.image} style={{borderRadius: '0px',height: '150px',width: '200px',marginLeft: '20px',}}/>  
+          )}
+          <div className="d-flex">
+            <button className="btn btn-sm btn-outline-primary" style={{ width: '90px', border: 'none' }}>👍 Like</button>
+            <button className="btn btn-sm btn-outline-primary" style={{ width: '140px', border: 'none' }}>💬 comment</button>
+          </div>
+        </Card.Body>
+      </Card>
     </div>
+  ))}
+</div>
+</div>
   </div>
-</div> 
 );
 };
 export default SidebarProfile;
