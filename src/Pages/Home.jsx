@@ -109,10 +109,10 @@ const Home = () => {
   return (
     <>
       <Navbar />
-      <div className="container-fluid mt-3">
-        <div className="row">
+      <div className="container-fluid ">
+        <div className="row" style={{backgroundColor:' rgb(193, 190, 255)'}}>
           <Sidebar />
-          <div className="col-md-8">
+          <div className="col-md-8 mt-3">
             {posts.map((post) => (
               <div key={post._id} className="card mb-3 shadow-sm">
                 <div className="card-body">
@@ -137,7 +137,7 @@ const Home = () => {
               </div>
             ))}
           </div>
-          <div className="container-fluid mt-9">
+          <div className="container-fluid">
         <div className="row">
           <div className="col-md-8 margin">
 {post.map((items,index)=>(
@@ -168,7 +168,8 @@ const Home = () => {
                     {activePostId === items._id && (<p style={{ color: 'green' }}>Typing</p>)}
                     <textarea value={comments[items._id] || ""} placeholder="Write comment..." onChange={(e) => handlechange(items._id, e)}/>
                    <>
-                    <button className="btn btn-success"  onClick={()=>comment(items._id)}>Add Comment</button>
+                    <button className="btn btn-success"  onClick={()=>comment(items._id)}>Add</button>
+                    <button>View</button>
                    </>
                    </div>
                   )}

@@ -1,4 +1,3 @@
-
 body {
     background-color: #f4f6f8;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -54,8 +53,9 @@ body {
   .margin{
     margin-left: 380px;
   }
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width:600px) {
     .margin{
+      
       margin-left: 0px;
     }
   }

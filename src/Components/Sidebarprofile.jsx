@@ -120,7 +120,7 @@ const edit = (postId) => {
 };
 
 return (
-    <div className="sidebar-profile">
+    <div className="sidebar-profile" style={{backgroundColor:' rgb(193, 190, 255)'}}>
     <div className="card shadow-sm p-3 mb-4 bg-white rounded">
       {data&&data.map((item)=>(
         <div key={item._id}>
@@ -176,6 +176,7 @@ return (
      <button className="btn btn-outline-danger btn-sm " style={{width:'300px',color:'black',textDecoration:'none'}}><a href='/login'>Logout</a></button>
       </div>
       <hr />
+      
       </div>
     ))} 
   <div className='d-flex flex-wrap gap-3 userpost'>
