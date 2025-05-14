@@ -1,55 +1,49 @@
-.card3{
-  max-width: 300px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin: 10px;
-  padding: 15px;
+.explore-containers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px;
+}
+.explore-cards {
   background-color: #fff;
-}
-.card1{
-  max-width: 100%;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin: 10px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 15px;
-  background-color:rgb(193, 190, 255);
+  width: 100%;
+  max-width: 300px;
+  text-align: left;
+  transition: transform 0.3s ease;
 }
-.card-bodys {
+.explore-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px;
+  gap: 10px;
+  margin-bottom: 10px;
 }
-.profile-pic img {
+.explore-img img {
   width: 50px;
   height: 50px;
-  object-fit: cover;
   border-radius: 50%;
-  margin-right: 15px;
+  object-fit: cover;
 }
-.card-info {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-}
-.username {
-  font-size: 16px;
-  font-weight: bold;
+.explore-info strong {
+  font-size: 1rem;
   color: #333;
 }
-.follow-btn {
-  padding: 6px 12px;
-  border: 1px solid #007bff;
-  background-color: #007bff;
+.follow-btns {
+  background-color: #938eef;
+  border: none;
   color: white;
+  padding: 6px 15px;
   border-radius: 20px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
+  width: 80px;
+  margin-left: 180px;
+  margin-top: -200px;
 }
+
 .follow-btn:hover {
-  background-color: #0056b3;
+  background-color: #6f63c7;
 }

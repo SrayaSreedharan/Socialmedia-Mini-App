@@ -25,7 +25,6 @@ const Home = () => {
   return storedfollow ? JSON.parse(storedfollow) : [];
   });
  
-
   useEffect(()=>{
     fetchPost()
   })
@@ -123,24 +122,25 @@ const Home = () => {
                 )}
                 <strong>{items.userId.username}</strong>{<br></br>}
                 <button className="flow-button mt-2"  onClick={()=>followUser(items.userId._id)}> {followposts.includes(items.userId._id) ? "following" : "follow"}</button>
+                {new Date(items.updatedAt).toLocaleString()}
                 </div>
                   <p className="card-text">{items.text}</p>
                   {items.image && (
                     <img src={items.image} alt="Post" className="img-fluid rounded" style={{width:'200px',height:'150px'}}/>
                   )}{<br></br>}
                  <div className="d-flex gap-3 mt-3">
-                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)} style={{backgroundColor: likedPosts.includes(items._id) ? "green" : "#ffffff",color:'black'}}> {likedPosts.includes(items._id) ? "👍Liked" : "👍 Like"}{items.likes.length>0 && items.likes.length}</button>
-                  <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} >💬 {commentPosts.includes(items._id) ? "commented" : "comment"}</button>
+                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)} style={{backgroundColor: likedPosts.includes(items._id) ? "green" : "#ffffff",color:'black'}}style={{ maxHeight: '38px', maxWidth: '100px' }}> {likedPosts.includes(items._id) ? "👍Liked" : "👍 Like"}{items.likes.length>0 && items.likes.length}</button>
+                  <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} style={{ maxHeight: '38px', maxWidth: '130px' }}  >💬 {commentPosts.includes(items._id) ? "commented" : "comment"}</button>
                   {showAddComment === index&& (
                     <div key={index}>
                     {activePostId === items._id && (<p style={{ color: 'green' }}>Typing</p>)}
                     <textarea value={comments[items._id] || ""} placeholder="Write comment..." onChange={(e) => handlechange(items._id, e)}/>
                    <>
-                    <button className="btn btn-success"  onClick={()=>comment(items._id)}>Add Comment</button>
+                    <button className="btn btn-success"  onClick={()=>comment(items._id)} >Add Comment</button>
                    </>
                    </div>
                   )}
-                  <button className="btn btn-sm btn-outline-success">🔄 Share</button>
+                  <button className="btn btn-sm btn-outline-success" style={{ maxHeight: '38px', maxWidth: '100px' }}>🔄 Share</button>
                 </div>
               </div>
             </div>
@@ -149,8 +149,6 @@ const Home = () => {
       </div>
     </div>
   </div>
-{/* </div>
-</div> */}
     </>
   );
 };

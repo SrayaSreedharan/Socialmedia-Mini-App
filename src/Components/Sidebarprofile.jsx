@@ -4,14 +4,15 @@ import '../Components/Sidebarprofile.css'
 import axios from 'axios';
 import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
+import Modal from 'react-bootstrap/Modal';
 
 const SidebarProfile = () => {
   const[data,setData]=useState([])
   const[postdata,setPostdata]=useState({})
   const [postType, setPostType] = useState('both');
   const [showAddPostForm, setShowAddPostForm] = useState(false);
-  // const [showEditPostForm, setShowEditPostForm] = useState(false); 
-  // const[editdata,setEditdata]=useState({})
+  const [showEditPostForm, setShowEditPostForm] = useState(false); 
+  const[editdata,setEditdata]=useState({})
   const [posts, setPosts] = useState([]);
   const [menuPostId, setMenuPostId] = useState(null);
   const [editingPostId, setEditingPostId] = useState(null);
@@ -69,31 +70,31 @@ const SidebarProfile = () => {
       })
       },[])
 
-  //   const handleschange=(e)=>{
-  //   setEditdata({...editdata,[e.target.name]:e.target.value})
-  //   console.log(editdata)
-  //   }
+    const handleschange=(e)=>{
+    setEditdata({...editdata,[e.target.name]:e.target.value})
+    console.log(editdata)
+    }
 
-  //   const filechange = (e) => {
-  //   console.log(e.target.files[0])
-  //   setEditdata({...editdata,profilePic:e.target.files[0]})
-  //   console.log(editdata)
-  // };
+    const filechange = (e) => {
+    console.log(e.target.files[0])
+    setEditdata({...editdata,profilePic:e.target.files[0]})
+    console.log(editdata)
+  };
 
-  //  const handleSubmit=()=>{
-  //  const id=localStorage.getItem("userId")
-  //  const formdata = new FormData()
-  //  formdata.append("bio",editdata.bio)
-  //  formdata.append("username",editdata.username)
-  //  formdata.append("profilePic",editdata.profilePic)
-  //  axios.put(`https://reactecomapi.onrender.com/post/updateprofile/${id}`,formdata).then((response)=>{
-  //      console.log(response.data)
-  //      setShowEditPostForm(false)
-  //      setData([response.data])
-  //  }).catch((error)=>{
-  //      console.log(error)
-  //  })
-  //  }
+   const handleSubmit=()=>{
+   const id=localStorage.getItem("userId")
+   const formdata = new FormData()
+   formdata.append("bio",editdata.bio)
+   formdata.append("username",editdata.username)
+   formdata.append("profilePic",editdata.profilePic)
+   axios.put(`https://reactecomapi.onrender.com/post/updateprofile/${id}`,formdata).then((response)=>{
+       console.log(response.data)
+       setShowEditPostForm(false)
+       setData([response.data])
+   }).catch((error)=>{
+       console.log(error)
+   })
+   }
 
    const deletes=(postId)=>{
     axios.delete(`https://reactecomapi.onrender.com/post/delposting/${postId}`).then((response)=>{
@@ -132,7 +133,7 @@ const edit = (postId) => {
       {data&&data.map((item)=>(
         <div key={item._id}>
         <div className="text-center">
-        <img src={item.profilePic}   width="100" height="100" className='center'/>
+        <img src={item.profilePic}   width="100" height="100" className='center' />
         <h5>{item.username}</h5>
         <p>{item.bio}</p>
       </div>
@@ -151,15 +152,22 @@ const edit = (postId) => {
         </div>
       </div>
       <div className="d-flex flex-column justify-content-center align-items-center gap-3">
-        <button className="btn btn-primary btn-sm " style={{width:'300px'}}><a href="/editprofile" style={{textDecoration:"none",color:'white'}}>Edit Profile</a></button>
-        {/* {showEditPostForm && (
-        <div className="p-3">
+        <button className="btn btn-primary btn-sm " style={{width:'300px'}} onClick={()=>setShowEditPostForm(!showEditPostForm)}>Edit Profile</button>
+        {showEditPostForm && (
+      <div className="modal show" style={{ display: 'block', position: 'initial' }}>
+      <Modal.Dialog>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit profile</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
           <textarea className="form-control mb-2" placeholder="bio..." name='bio' onChange={handleschange}/>
           <input type='text' className="form-control mb-2" placeholder="edit username" name='username' onChange={handleschange}/>
           <input type='file'  name='profilePic' onChange={filechange}></input>
-         <button className="btn btn-success w-100" onClick={handleSubmit}>save</button> 
-        </div>
-      )} */}
+          <button className="btn btn-success " onClick={handleSubmit} style={{width:'100px',marginLeft:'60px'}}>save</button> 
+        </Modal.Body>
+      </Modal.Dialog>
+    </div>
+    )}
       <button className="btn btn-secondary btn-sm " style={{width:'300px'}}  onClick={() => setShowAddPostForm(!showAddPostForm)}>Add</button>
 {showAddPostForm && (
   <div className="p-3">
@@ -191,78 +199,26 @@ const edit = (postId) => {
       <Card style={{ width: '18rem' }}>
         <Card.Body>
           <Card.Text>{new Date(data.updatedAt).toLocaleString()}</Card.Text>
-          <button className="btn btn-sm" style={{ width: '90px', border: 'none', marginLeft: '200px', marginTop: '-90px' }}
-            onClick={() => {
-             setMenuPostId(menuPostId === data._id ? null : data._id);
-  setEditText(data.text);
-            }}
-          >
-            ☰
-          </button>
-
-         
+          <button className="btn btn-sm" style={{ width: '90px', border: 'none', marginLeft: '200px', marginTop: '-90px' }} onClick={() => {setMenuPostId(menuPostId === data._id ? null : data._id);setEditText(data.text);}}>☰</button>
           {menuPostId === data._id && (
             <div>
-              <button
-                className="btn btn-sm btn-outline-primary"
-                style={{ width: '100px', border: 'none', color: 'red' }}
-                onClick={() => setEditingPostId(data._id)}
-              >
-                EDIT TEXT
-              </button>
-
-    
+              <button className="btn btn-sm btn-outline-primary" style={{ width: '100px', border: 'none', color: 'red' }} onClick={() => setEditingPostId(data._id)}>EDIT TEXT</button>
               {editingPostId === data._id && (
                 <div>
-                  <input
-                    type="text"
-                    className="border border-black"
-                    name="text"
-                    value={editText}
-                    onChange={(e) => setEditText(e.target.value)}
-                  />
-                  <button
-                    className="btn btn-success"
-                    onClick={() => edit(data._id)}
-                    style={{ width: '70px' }}
-                  >
-                    Save
-                  </button>
+                  <input type="tex" className="border border-black" name="text" value={editText} onChange={(e) => setEditText(e.target.value)}/>
+                  <button className="btn btn-success" onClick={() => edit(data._id)} style={{ width: '70px' }}>Save</button>
                 </div>
               )}
-
-              <button
-                className="btn btn-sm btn-outline-primary"
-                style={{ width: '100px', border: 'none', color: 'red' }}
-                onClick={() => deletes(data._id)}
-              >
-                DELETE
-              </button>
+              <button className="btn btn-sm btn-outline-primary" style={{ width: '100px', border: 'none', color: 'red' }} onClick={() => deletes(data._id)}>DELETE</button>
             </div>
           )}
-
           <Card.Text>{data.text}</Card.Text>
-
           {data.image && (
-            <Card.Img
-              variant="top"
-              src={data.image}
-              style={{
-                borderRadius: '0px',
-                height: '150px',
-                width: '200px',
-                marginLeft: '20px',
-              }}
-            />
+            <Card.Img variant="top" src={data.image}style={{borderRadius: '0px',height: '150px',width: '200px',marginLeft: '20px',}}/>
           )}
-
           <div className="d-flex">
-            <button className="btn btn-sm btn-outline-primary" style={{ width: '90px', border: 'none' }}>
-              👍 Like {data.likes.length}
-            </button>
-            <button className="btn btn-sm btn-outline-primary" style={{ width: '140px', border: 'none' }}>
-              💬 comment
-            </button>
+            <button className="btn btn-sm btn-outline-primary" style={{ width: '90px', border: 'none' }}>👍 Like {data.likes.length}</button>
+            <button className="btn btn-sm btn-outline-primary" style={{ width: '140px', border: 'none' }}>💬 comment</button>
           </div>
         </Card.Body>
       </Card>
@@ -270,8 +226,7 @@ const edit = (postId) => {
   ))}
 </div>
 </div>
-  </div>
-
+</div>
 );
 };
 export default SidebarProfile;

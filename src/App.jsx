@@ -5,19 +5,20 @@ import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import Explore from './Components/Explore';
-import Editprofile from './Components/Editprofile';
+import Fhome from './Pages/Fhome';
 
 function App() {
   return (
     <>
     <BrowserRouter>
     <Routes>
+       <Route path="/" element={<Fhome/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path="/signup" element={<Signup/>}/>
       <Route path="/home" element={<Home/>}/>
       <Route path="/sidebarprofile" element={<SidebarProfile/>}/>
       <Route path="/explore" element={<Explore/>}/>
-       <Route path="/editprofile" element={<Editprofile/>}/>
+     
     </Routes>
     </BrowserRouter> 
     </>

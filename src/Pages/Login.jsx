@@ -16,9 +16,6 @@ const Login = () => {
         if(!login.email){
             errormsg.email="enter email"
         }
-        else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(!login.email)){
-            errormsg.email="Email is not valid"
-        }
         if(!login.password){
             errormsg.password="enter password"
         }
