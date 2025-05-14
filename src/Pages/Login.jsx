@@ -16,6 +16,9 @@ const Login = () => {
         if(!login.email){
             errormsg.email="enter email"
         }
+        else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(!login.email)){
+            errormsg.email="Email is not valid"
+        }
         if(!login.password){
             errormsg.password="enter password"
         }
@@ -51,7 +54,7 @@ const Login = () => {
           <form className='frrm'>
           <h1>Login</h1>
             <label style={{color:"red"}}>{error.email}</label>
-            <input type='text' name="email" placeholder='Email' onChange={handlechange}/>{<br></br>}
+            <input type='email' name="email" placeholder='Email' onChange={handlechange}/>{<br></br>}
             <label style={{color:"red"}}>{error.password}</label>
             <input type='text' name="password" placeholder='password'  onChange={handlechange}/>{<br></br>}
             <button type='submit'className='butn' onClick={handlesubmit}>login</button>{<br></br>}

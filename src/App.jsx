@@ -5,6 +5,7 @@ import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import Explore from './Components/Explore';
+import Editprofile from './Components/Editprofile';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/home" element={<Home/>}/>
       <Route path="/sidebarprofile" element={<SidebarProfile/>}/>
       <Route path="/explore" element={<Explore/>}/>
+       <Route path="/editprofile" element={<Editprofile/>}/>
     </Routes>
     </BrowserRouter> 
     </>

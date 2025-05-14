@@ -95,9 +95,11 @@ const Signup = () => {
 
   const validate = () => {
     const errormsg = {};
-    if (!signup.name) errormsg.name = "Enter name";
-    if (!signup.email) errormsg.email = "Enter email";
     if (!signup.username) errormsg.username = "Enter username";
+    if (!signup.email) errormsg.email = "Enter email";
+    else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(!signup.email)){
+            errormsg.email="Email is not valid"
+        }
     if (!signup.password) errormsg.password = "Enter password";
     setError(errormsg);
     return Object.keys(errormsg).length === 0;
@@ -136,14 +138,11 @@ const Signup = () => {
         <div className="right">
           <h1>Register</h1>
           <form onSubmit={handleSubmit}>
-            <label style={{ color: 'red' }}>{error.name}</label>
-            <input type='text' name="name" placeholder='Name' onChange={handleChange} />
+            <label style={{ color: 'red',marginTop:'-20px' }}>{error.username}</label>
+            <input type='text' name="username" placeholder='Username' onChange={handleChange} />
             <br />
             <label style={{ color: 'red' }}>{error.email}</label>
-            <input type='text' name="email" placeholder='Email' onChange={handleChange} />
-            <br />
-            <label style={{ color: 'red' }}>{error.username}</label>
-            <input type='text' name="username" placeholder='Username' onChange={handleChange} />
+            <input type='email' name="email" placeholder='Email' onChange={handleChange} />
             <br />
             <label style={{ color: 'red' }}>{error.password}</label>
             <input type='password' name="password" placeholder='Password' onChange={handleChange} />

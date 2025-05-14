@@ -52,10 +52,11 @@ body {
   }
   .margin{
     margin-left: 380px;
+    margin-top: -190px;
   }
   @media screen and (max-width:600px) {
     .margin{
-      
+      margin-top: 0px;
       margin-left: 0px;
     }
   }
