@@ -24,46 +24,43 @@ const Home = () => {
   return storedfollow ? JSON.parse(storedfollow) : [];
   });
  
-     const fetchPost= ()=>{
+      const fetchPost= ()=>{
       axios.get("https://reactecomapi.onrender.com/post/allpost").then((response)=>{
       console.log(response.data)
       setPosts(response.data)
       }).catch((error)=>{
       console.log(error)
       })
-      }
+    }
+      useEffect(() => {
+      localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+      }, [likedPosts]);
 
-    useEffect(() => {
-    localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
-    }, [likedPosts]);
+      useEffect(() => {
+      localStorage.setItem('followPosts', JSON.stringify(followposts));
+      }, [followposts]);
 
-    useEffect(() => {
-    localStorage.setItem('followPosts', JSON.stringify(followposts));
-    }, [followposts]);
-
-    const clicklike=(postId)=>{   
-    setLikedPosts((prev) =>
-    prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]);
+      const clicklike=(postId)=>{   
+      setLikedPosts((prev) =>
+      prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]);
       const userId=localStorage.getItem("userId")
       axios.put(`https://reactecomapi.onrender.com/post/like/${postId}`,{userId}).then((response)=>{
       console.log(response)
-        }).catch((error)=>{
-          console.log(error)
-        })
+      }).catch((error)=>{
+        console.log(error)
+      })
     }
-
-    const handlechange=(postId,e)=>{
-    setComments({...comments,[postId]:e.target.value });
-    setActivePostId(postId);
+      const handlechange=(postId,e)=>{
+      setComments({...comments,[postId]:e.target.value });
+      setActivePostId(postId);
     };
+      useEffect(() => {
+      localStorage.setItem('commentPosts', JSON.stringify(commentPosts));
+      }, [commentPosts]);
 
-    useEffect(() => {
-    localStorage.setItem('commentPosts', JSON.stringify(commentPosts));
-    }, [commentPosts]);
-
-    const comment=(postId)=>{
-    setcommentPosts((prev) =>
-    prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]);
+       const comment=(postId)=>{
+       setcommentPosts((prev) =>
+       prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]);
        const id=localStorage.getItem("userId")
        const text=comments[postId]
        axios.post(`https://reactecomapi.onrender.com/post/comment/${postId}`,{id,text}).then((response)=>{
@@ -79,20 +76,20 @@ const Home = () => {
   },[]) 
 
        const followUser=(id)=>{
-        setfollowPosts((prev) =>
-        prev.includes(id) ? prev.filter(userId => userId !== id) : [...prev, id]);
-        const currentUserId=localStorage.getItem("userId")
+       setfollowPosts((prev) =>
+       prev.includes(id) ? prev.filter(userId => userId !== id) : [...prev, id]);
+       const currentUserId=localStorage.getItem("userId")
        axios.put(`https://reactecomapi.onrender.com/post/user/${id}/follow`,{ currentUserId}).then((response)=>{
        console.log(response)
-        }).catch((error)=>{
+       }).catch((error)=>{
           console.log(error)
-        })
-        axios.put(`https://reactecomapi.onrender.com/post/user/${id}/unfollow`,{currentUserId}).then((response)=>{
-          console.log(response)
-        }).catch((error)=>{
-          console.log(error)
-        })
-      } 
+       })
+       axios.put(`https://reactecomapi.onrender.com/post/user/${id}/unfollow`,{currentUserId}).then((response)=>{
+       console.log(response)
+       }).catch((error)=>{
+       console.log(error)
+       })
+    } 
        
   return (
     <>
@@ -101,9 +98,9 @@ const Home = () => {
         <div className="row"  style={{backgroundColor:' rgb(193, 190, 255)'}}>
           <Sidebar  />
           <div className="col-md-8 margin">
-{post.map((items,index)=>(
-  <div>
-    <div key={items._id} className="card mb-3 shadow-sm">
+      {post.map((items,index)=>(
+        <div>
+          <div key={items._id} className="card mb-3 shadow-sm">
                 <div className="card-body">
                   <div className="d-flex align-items-center mb-2 ">
                   {items.userId?.profilePic ? (
