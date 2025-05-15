@@ -1,7 +1,6 @@
 import React from 'react';
 import Navbar from '../Components/Navbar';
 import Sidebar from '../Components/Sidebar';
-import Post from '../Components/Post';
 import { useState,useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -25,10 +24,6 @@ const Home = () => {
   return storedfollow ? JSON.parse(storedfollow) : [];
   });
  
-  useEffect(()=>{
-    fetchPost()
-  })
-  
      const fetchPost= ()=>{
       axios.get("https://reactecomapi.onrender.com/post/allpost").then((response)=>{
       console.log(response.data)
@@ -52,7 +47,6 @@ const Home = () => {
       const userId=localStorage.getItem("userId")
       axios.put(`https://reactecomapi.onrender.com/post/like/${postId}`,{userId}).then((response)=>{
       console.log(response)
-      fetchPost();
         }).catch((error)=>{
           console.log(error)
         })
@@ -80,6 +74,9 @@ const Home = () => {
           console.log(error)
         })
     }
+    useEffect(()=>{
+    fetchPost()
+  },[]) 
 
        const followUser=(id)=>{
         setfollowPosts((prev) =>
@@ -95,7 +92,8 @@ const Home = () => {
         }).catch((error)=>{
           console.log(error)
         })
-      }  
+      } 
+       
   return (
     <>
       <Navbar  />
@@ -120,23 +118,31 @@ const Home = () => {
                 {new Date(items.updatedAt).toLocaleString()}
                 </div>
                   <p className="card-text"> {items.text=="undefined"?"":items.text}</p>
-                 
-                  {items.image && (
+                  {items.image && items.image.length > 0 && (
                     <img src={items.image} alt="Post" className="img-fluid rounded" style={{width:'200px',height:'150px'}}/>
                   )}{<br></br>}
                  <div className="d-flex gap-3 mt-3">
-                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)}  style={{ maxHeight: '38px', maxWidth: '100px' }}> {likedPosts.includes(items._id) ? "👍Liked" : "👍 Like"}{items.likes.length>0 && items.likes.length}</button>
-                  <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} style={{ maxHeight: '38px', maxWidth: '130px' }}  >💬 {commentPosts.includes(items._id) ? "commented" : "comment"}</button>
+                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)}  style={{ maxHeight: '45px', maxWidth: '100px' }}> {likedPosts.includes(items._id) ? "👍Liked" : "👍 Like"}{items.likes.length>0 && items.likes.length}</button>
+                  <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} style={{ maxHeight: '45px', maxWidth: '140px' }}  >💬 {commentPosts.includes(items._id) ? "commented" : "comment"}{items.comments?.length || 0}</button>
                   {showAddComment === index&& (
                     <div key={index}>
-                    {activePostId === items._id && (<p style={{ color: 'green' }}>Typing</p>)}
-                    <textarea value={comments[items._id] || ""} placeholder="Write comment..." onChange={(e) => handlechange(items._id, e)}/>
+                    {/* {activePostId === items._id && ()} */}
+                    <input type='text' value={comments[items._id] || ""} placeholder="Write comment..." onChange={(e) => handlechange(items._id, e)}/>
                    <>
-                    <button className="btn btn-success"  onClick={()=>comment(items._id)} >Add Comment</button>
+                    <button className="btn btn-success"  onClick={()=>comment(items._id)} >Add</button>
                    </>
+                   {items.comments && items.comments.length > 0 && (
+                  <div className="mt-2">
+                    {items.comments.map((comment, index) => (
+                      <div key={comment._id || index} style={{ paddingLeft: '10px', fontSize: '0.9rem' }}>
+                        <strong>{comment.userId?.username || 'Anonymous'}</strong>: {comment.text}
+                      </div>
+                    ))}
+                  </div>
+                )}
                    </div>
                   )}
-                  <button className="btn btn-sm btn-outline-success" style={{ maxHeight: '38px', maxWidth: '100px' }}>🔄 Share</button>
+                <button className="btn btn-sm btn-outline-success" style={{ maxHeight: '45px', maxWidth: '100px' }}>🔄 Share</button>
                 </div>
               </div>
             </div>

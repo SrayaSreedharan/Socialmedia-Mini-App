@@ -110,15 +110,15 @@ const SidebarProfile = () => {
     })
    }
 
-const edit = (postId) => {
-  axios.put(`https://reactecomapi.onrender.com/post/editpost/${postId}`, { text: editText }).then((response) => {
-      console.log("Updated post:", response.data); 
-      const updatedPosts = posts.map((post) => post._id === postId ? { ...post, text: editText } : post);
-      setPosts(updatedPosts);
-      setMenuPostId(null);
-    }).catch((error) => {
-      console.log(error);
-    });
+    const edit = (postId) => {
+    axios.put(`https://reactecomapi.onrender.com/post/editpost/${postId}`, { text: editText }).then((response) => {
+        console.log("Updated post:", response.data); 
+        const updatedPosts = posts.map((post) => post._id === postId ? { ...post, text: editText } : post);
+        setPosts(updatedPosts);
+        setMenuPostId(null);
+      }).catch((error) => {
+        console.log(error);
+      });
 };
 
   return (
@@ -190,7 +190,7 @@ const edit = (postId) => {
             </div>
           )}
           </Card.Text>
-         {data.image &&(
+          {data.image && data.image.length > 0 && (
             <Card.Img variant="top" src={data.image}style={{borderRadius: '0px',height: '150px',width: '200px',marginLeft: '30px'}}/> 
           )}
           <div className="d-flex">
