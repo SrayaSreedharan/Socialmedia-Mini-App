@@ -129,7 +129,7 @@ const Home = () => {
                     <img src={items.image} alt="Post" className="img-fluid rounded" style={{width:'200px',height:'150px'}}/>
                   )}{<br></br>}
                  <div className="d-flex gap-3 mt-3">
-                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)} style={{backgroundColor: likedPosts.includes(items._id) ? "green" : "#ffffff",color:'black'}}style={{ maxHeight: '38px', maxWidth: '100px' }}> {likedPosts.includes(items._id) ? "👍Liked" : "👍 Like"}{items.likes.length>0 && items.likes.length}</button>
+                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)}  style={{ maxHeight: '38px', maxWidth: '100px' }}> {likedPosts.includes(items._id) ? "👍Liked" : "👍 Like"}{items.likes.length>0 && items.likes.length}</button>
                   <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} style={{ maxHeight: '38px', maxWidth: '130px' }}  >💬 {commentPosts.includes(items._id) ? "commented" : "comment"}</button>
                   {showAddComment === index&& (
                     <div key={index}>
