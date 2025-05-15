@@ -5,17 +5,17 @@ import axios from 'axios';
 import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
+import { Delete } from 'lucide-react';
+import { FilePenLine } from 'lucide-react';
 
 const SidebarProfile = () => {
   const[data,setData]=useState([])
   const[postdata,setPostdata]=useState({})
-  const [postType, setPostType] = useState('both');
   const [showAddPostForm, setShowAddPostForm] = useState(false);
   const [showEditPostForm, setShowEditPostForm] = useState(false); 
   const[editdata,setEditdata]=useState({})
   const [posts, setPosts] = useState([]);
   const [menuPostId, setMenuPostId] = useState(null);
-  const [editingPostId, setEditingPostId] = useState(null);
   const [editText, setEditText] = useState("");
 
   useEffect(()=>{
@@ -37,28 +37,30 @@ const SidebarProfile = () => {
     setPostdata({...postdata,imageUrls:e.target.files[0]})
     console.log(postdata)
   };
+  
 
   const add = (e) => {
-    e.preventDefault()
-    console.log("button clicked")
-    if(!postdata.text && !postdata.imageUrls ){
-      console.log("error")
-    }
-    const id=localStorage.getItem("userId")
-    console.log(id)
-    const formdata = new FormData()
-    formdata.append("image",postdata.imageUrls)
-    formdata.append("text",postdata.text)
-    formdata.append("userId",id)
-    axios.post("https://reactecomapi.onrender.com/post/posting",formdata).then((response) => {
-      console.log(response.data);
-      setPosts(response.data)
+  e.preventDefault();
+  const id = localStorage.getItem("userId");
+  if (!postdata.text && !postdata.imageUrls) {
+      alert("Please enter text or select an image.");
+      return;
+  }
+  const formdata = new FormData();
+    formdata.append("text", postdata.text);
+    formdata.append("image", postdata.imageUrls);
+    formdata.append("userId", id);
+    axios.post("https://reactecomapi.onrender.com/post/posting", formdata).then((response) => {
+      console.log("Post created:", response.data);
       setShowAddPostForm(false);
       setPostdata({});
-      }).catch((error )=> {
-        console.error(error);
-      });
-  };
+      axios.get(`https://reactecomapi.onrender.com/post/userposts/${id}`).then((res) => {
+        setPosts(res.data);
+        }).catch((err) => console.log(err));
+    }).catch((error) => {
+      console.error("Post creation error:", error);
+    });
+};
 
    useEffect(()=>{
      const id=localStorage.getItem("userId")
@@ -107,22 +109,14 @@ const SidebarProfile = () => {
       console.log(error)
     })
    }
-const edit = (postId) => {
-  axios
-    .put(`https://reactecomapi.onrender.com/post/editpost/${postId}`, { text: editText })
-    .then((response) => {
-      const updatedPost = Array.isArray(response.data)
-        ? response.data.find((p) => p._id === postId)
-        : response.data;
 
-      const updatedPosts = posts.map((post) =>
-        post._id === postId ? { ...post, text: updatedPost.text } : post
-      );
+const edit = (postId) => {
+  axios.put(`https://reactecomapi.onrender.com/post/editpost/${postId}`, { text: editText }).then((response) => {
+      console.log("Updated post:", response.data); 
+      const updatedPosts = posts.map((post) => post._id === postId ? { ...post, text: editText } : post);
       setPosts(updatedPosts);
-      setEditingPostId(null);
       setMenuPostId(null);
-    })
-    .catch((error) => {
+    }).catch((error) => {
       console.log(error);
     });
 };
@@ -168,24 +162,12 @@ const edit = (postId) => {
       </Modal.Dialog>
     </div>
     )}
-      <button className="btn btn-secondary btn-sm " style={{width:'300px'}}  onClick={() => setShowAddPostForm(!showAddPostForm)}>Add</button>
+      <button className="btn btn-secondary btn-sm" style={{ width: '300px' }}onClick={() => setShowAddPostForm(!showAddPostForm)}>Add</button>
 {showAddPostForm && (
   <div className="p-3">
-    <label className="form-label">Select Post Type</label>
-    <select className="form-select mb-3" value={postType} onChange={(e) => setPostType(e.target.value)}>
-      <option value="text">Add Text</option>
-      <option value="image">Add Image</option>
-      <option value="both">Add Both</option>
-    </select>
-    {(postType === 'text' || postType === 'both') && (
-      <textarea className="form-control mb-2" placeholder="Post text" name='text' onChange={handlechange}/>
-    )}
-    {(postType === 'image' || postType === 'both') && (
-      <>
-        <input type="file" accept="image/*" name='image' onChange={handleFileChange} className="form-control mb-2" />
-      </>
-    )}
-    <button className="btn btn-success " onClick={(e)=>add(e)} style={{width:'300px'}}>Create Post</button>
+    <textarea className="form-control mb-2" placeholder="typing your post" name="text" onChange={handlechange}/>
+    <input type="file" accept="image/*" name="image" onChange={handleFileChange}className="form-control mb-2"/>
+    <button className="btn btn-success" onClick={add} style={{ width: '300px' }}>Create Post</button>
   </div>
 )}
      <button className="btn btn-outline-danger btn-sm " style={{width:'300px',color:'black',textDecoration:'none'}}><a href='/login'>Logout</a></button>
@@ -196,29 +178,26 @@ const edit = (postId) => {
   <div className='d-flex flex-wrap gap-3 userpost'>
   {posts.map((data) => (
     <div key={data._id}>
-      <Card style={{ width: '18rem' }}>
+      <Card style={{ width: '19rem'}}>
         <Card.Body>
           <Card.Text>{new Date(data.updatedAt).toLocaleString()}</Card.Text>
-          <button className="btn btn-sm" style={{ width: '90px', border: 'none', marginLeft: '200px', marginTop: '-90px' }} onClick={() => {setMenuPostId(menuPostId === data._id ? null : data._id);setEditText(data.text);}}>☰</button>
-          {menuPostId === data._id && (
+          <Card.Text>
+            {data.text=="undefined"?"":data.text}
+             {menuPostId === data._id && (
             <div>
-              <button className="btn btn-sm btn-outline-primary" style={{ width: '100px', border: 'none', color: 'red' }} onClick={() => setEditingPostId(data._id)}>EDIT TEXT</button>
-              {editingPostId === data._id && (
-                <div>
-                  <input type="tex" className="border border-black" name="text" value={editText} onChange={(e) => setEditText(e.target.value)}/>
-                  <button className="btn btn-success" onClick={() => edit(data._id)} style={{ width: '70px' }}>Save</button>
-                </div>
-              )}
-              <button className="btn btn-sm btn-outline-primary" style={{ width: '100px', border: 'none', color: 'red' }} onClick={() => deletes(data._id)}>DELETE</button>
+              <input type="tex" className="border border-black" name="text" value={editText} onChange={(e) => setEditText(e.target.value)}/>
+              <button className="btn btn-success" onClick={() => edit(data._id)} style={{ width: '70px',border:'none',backgroundColor:'white',color:'green' }}>Save</button>
             </div>
           )}
-          <Card.Text>{data.text}</Card.Text>
-          {data.image && (
-            <Card.Img variant="top" src={data.image}style={{borderRadius: '0px',height: '150px',width: '200px',marginLeft: '20px',}}/>
-          )}
+          </Card.Text>
+         {data.image && data.image !== "undefined" && data.image !== "" && data.image !== null?
+            <Card.Img variant="top" src={data.image}style={{borderRadius: '0px',height: '150px',width: '200px',marginLeft: '30px'}}/> : null
+          }
           <div className="d-flex">
-            <button className="btn btn-sm btn-outline-primary" style={{ width: '90px', border: 'none' }}>👍 Like {data.likes.length}</button>
-            <button className="btn btn-sm btn-outline-primary" style={{ width: '140px', border: 'none' }}>💬 comment</button>
+            <button className="btn btn-sm " style={{ width: '90px', border: 'none' }}>👍 {data.likes.length}</button>
+            <button className="btn btn-sm " style={{ width: '140px', border: 'none' }}>💬 </button>
+            <button className="btn btn-sm " style={{ width: '90px', border: 'none',color:'black'}} onClick={() => {setMenuPostId(menuPostId === data._id ? null : data._id);setEditText(data.text);}}><FilePenLine size={15} /></button>{<br></br>}
+            <button className="btn btn-sm " style={{ width: '100px', border: 'none', color: 'red' }} onClick={() => deletes(data._id)}> <Delete size={18}/></button>
           </div>
         </Card.Body>
       </Card>
