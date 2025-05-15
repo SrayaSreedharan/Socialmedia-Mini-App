@@ -190,9 +190,9 @@ const edit = (postId) => {
             </div>
           )}
           </Card.Text>
-         {data.image && data.image !== "undefined" && data.image !== "" && data.image !== null?
-            <Card.Img variant="top" src={data.image}style={{borderRadius: '0px',height: '150px',width: '200px',marginLeft: '30px'}}/> : null
-          }
+         {data.image &&(
+            <Card.Img variant="top" src={data.image}style={{borderRadius: '0px',height: '150px',width: '200px',marginLeft: '30px'}}/> 
+          )}
           <div className="d-flex">
             <button className="btn btn-sm " style={{ width: '90px', border: 'none' }}>👍 {data.likes.length}</button>
             <button className="btn btn-sm " style={{ width: '140px', border: 'none' }}>💬 </button>

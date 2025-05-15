@@ -43,8 +43,8 @@ const Home = () => {
     }, [likedPosts]);
 
     useEffect(() => {
-  localStorage.setItem('followPosts', JSON.stringify(followposts));
-}, [followposts]);
+    localStorage.setItem('followPosts', JSON.stringify(followposts));
+    }, [followposts]);
 
     const clicklike=(postId)=>{   
     setLikedPosts((prev) =>
@@ -52,14 +52,10 @@ const Home = () => {
       const userId=localStorage.getItem("userId")
       axios.put(`https://reactecomapi.onrender.com/post/like/${postId}`,{userId}).then((response)=>{
       console.log(response)
+      fetchPost();
         }).catch((error)=>{
           console.log(error)
         })
-        useEffect(()=>{
-    fetchPost()
-  })
-  
-        
     }
 
     const handlechange=(postId,e)=>{
@@ -89,7 +85,6 @@ const Home = () => {
         setfollowPosts((prev) =>
         prev.includes(id) ? prev.filter(userId => userId !== id) : [...prev, id]);
         const currentUserId=localStorage.getItem("userId")
-      
        axios.put(`https://reactecomapi.onrender.com/post/user/${id}/follow`,{ currentUserId}).then((response)=>{
        console.log(response)
         }).catch((error)=>{
@@ -124,7 +119,8 @@ const Home = () => {
                 <button className="flow-button mt-2"  onClick={()=>followUser(items.userId._id)}> {followposts.includes(items.userId._id) ? "following" : "follow"}</button>
                 {new Date(items.updatedAt).toLocaleString()}
                 </div>
-                  <p className="card-text">{items.text}</p>
+                  <p className="card-text"> {items.text=="undefined"?"":items.text}</p>
+                 
                   {items.image && (
                     <img src={items.image} alt="Post" className="img-fluid rounded" style={{width:'200px',height:'150px'}}/>
                   )}{<br></br>}
