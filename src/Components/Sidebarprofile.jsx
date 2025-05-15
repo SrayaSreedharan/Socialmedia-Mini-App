@@ -194,7 +194,7 @@ const SidebarProfile = () => {
             <Card.Img variant="top" src={data.image}style={{borderRadius: '0px',height: '150px',width: '200px',marginLeft: '30px'}}/> 
           )}
           <div className="d-flex">
-            <button className="btn btn-sm " style={{ width: '90px', border: 'none' }}>👍 {data.likes.length}</button>
+            <button className="btn btn-sm " style={{ width: '90px', border: 'none' }}>❤️ {data.likes.length}</button>
             <button className="btn btn-sm " style={{ width: '140px', border: 'none' }}>💬 </button>
             <button className="btn btn-sm " style={{ width: '90px', border: 'none',color:'black'}} onClick={() => {setMenuPostId(menuPostId === data._id ? null : data._id);setEditText(data.text);}}><FilePenLine size={15} /></button>{<br></br>}
             <button className="btn btn-sm " style={{ width: '100px', border: 'none', color: 'red' }} onClick={() => deletes(data._id)}> <Delete size={18}/></button>
