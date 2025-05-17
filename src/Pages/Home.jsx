@@ -3,6 +3,7 @@ import Navbar from '../Components/Navbar';
 import Sidebar from '../Components/Sidebar';
 import { useState,useEffect } from 'react';
 import axios from 'axios';
+import { Delete } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Pages/Home.css'
 import { Modal } from 'react-bootstrap';
@@ -93,6 +94,19 @@ const Home = () => {
        console.log(error)
        })
     } 
+
+    const deletecmt=(postId,commentId)=>{
+      
+      axios.delete(`https://reactecomapi.onrender.com/post/comment/${postId}/${commentId}`).then((response)=>{
+        console.log(response)
+         const filtered= post.filter((item)=>{
+        return item._id !== postId
+      })
+      setPosts(filtered)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    }
        
   return (
     <>
@@ -139,7 +153,9 @@ const Home = () => {
                       <div className="card-body p-2">
                         {items.comments.map((comment, index) => (
                           <div key={comment._id || index} className="border-bottom mb-2 pb-1" style={{ fontSize: '0.9rem' }}>
+                            <button style={{color: 'red'}} onClick={() => deletecmt(post._id, comment._id)}><Delete size={18}/></button>
                             <strong>{comment.userId|| 'Anonymous'}</strong>: {comment.text}
+                            
                           </div>
                         ))}
                       </div>

@@ -11,6 +11,7 @@ import { MessageSquarePlus } from 'lucide-react';
 
 const SidebarProfile = () => {
   const[data,setData]=useState([])
+  // const [del, setDelete] = useState([]);
   const[postdata,setPostdata]=useState({})
   const [showAddPostForm, setShowAddPostForm] = useState(false);
   const [showEditPostForm, setShowEditPostForm] = useState(false); 
@@ -164,10 +165,31 @@ const SidebarProfile = () => {
        axios.post(`https://reactecomapi.onrender.com/post/comment/${postId}`,{id,text}).then((response)=>{
        console.log(response)
        setShowAddComment(false) 
-       setComments('')
         }).catch((error)=>{
           console.log(error)
         })
+    }
+
+     const deletecmt=(postId,commentId)=>{
+        axios.delete(`https://reactecomapi.onrender.com/post/comment/${postId}/${commentId}`).then((response)=>{
+        console.log(response)
+        const updatedPosts = posts.map((post) => {
+        if (post._id === postId) {
+          const updatedComments = post.comments.filter((comment) => comment._id !== commentId);
+          return {
+            ...post,
+            comments: updatedComments,
+          };
+        }
+        return post;
+      });
+
+      setPosts(updatedPosts);         
+      setShowAddComment(null);       
+   
+      }).catch((error)=>{
+        console.log(error)
+      })
     }
 
   return (
@@ -247,12 +269,11 @@ const SidebarProfile = () => {
           <div >
             <div className="d-flex">
             <button className="btn btn-sm " style={{ width: '90px', border: 'none' }} onClick={()=>clicklike(data._id)}>{data.likes.length>0 && data.likes.length}{likedPosts.includes(data._id) ? "❤️" : "❤️"}</button>
-            <button className="btn btn-sm " style={{ width: '140px', border: 'none' }} onClick={()=>setShowAddComment(index)}> {data.comments.length >0 && data.comments.length}💬 </button>
+            <button className="btn btn-sm " style={{ width: '140px', border: 'none' }} onClick={()=>setShowAddComment(index)}> {data.comments.length >0 && data.comments.length}{commentPosts.includes(data._id) ? "💬" : "💬"} </button>
             <button className="btn btn-sm " style={{ width: '90px', border: 'none',color:'black'}} onClick={() => {setMenuPostId(menuPostId === data._id ? null : data._id);setEditText(data.text);}}><FilePenLine size={15} /></button>{<br></br>}
             </div>
             {showAddComment === index&& (
                     <div key={index}>
-                   {data.comments && data.comments.length > 0 && (
                     <div className="card mt-3">
                       <div className="card-header">
                         {activePostId === data._id }
@@ -265,13 +286,13 @@ const SidebarProfile = () => {
                       <div className="card-body p-2">
                         {data.comments.map((comment, index) => (
                           <div key={comment._id || index} className="border-bottom mb-2 pb-1" style={{ fontSize: '0.9rem' }}>
+                             <button style={{color: 'red'}} onClick={() => deletecmt(data._id, comment._id)}><Delete size={18}/></button>
                             <strong>{comment.userId}</strong>: {comment.text}
-                            {/* <button><Delete size={18}/></button> */}
                           </div>
                         ))}
                       </div>
                     </div>
-                  )}
+
                    </div>
                   )}
           </div>
