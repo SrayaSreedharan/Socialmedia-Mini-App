@@ -7,16 +7,28 @@ import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
 import { Delete } from 'lucide-react';
 import { FilePenLine } from 'lucide-react';
+import { MessageSquarePlus } from 'lucide-react';
 
 const SidebarProfile = () => {
   const[data,setData]=useState([])
   const[postdata,setPostdata]=useState({})
   const [showAddPostForm, setShowAddPostForm] = useState(false);
   const [showEditPostForm, setShowEditPostForm] = useState(false); 
+  const[showAddComment,setShowAddComment]=useState(false)
   const[editdata,setEditdata]=useState({})
+   const[comments,setComments]=useState('')
   const [posts, setPosts] = useState([]);
   const [menuPostId, setMenuPostId] = useState(null);
   const [editText, setEditText] = useState("");
+  const [activePostId, setActivePostId] = useState(null); 
+  const [likedPosts, setLikedPosts] = useState(() => {
+    const storedLikes = localStorage.getItem('likedPosts');
+    return storedLikes ? JSON.parse(storedLikes) : [];
+    });
+    const [commentPosts, setcommentPosts] = useState(() => {
+      const storedcomment = localStorage.getItem('commentPosts');
+      return storedcomment ? JSON.parse(storedcomment) : [];
+      });
 
   useEffect(()=>{
     const id=localStorage.getItem("userId")
@@ -119,7 +131,44 @@ const SidebarProfile = () => {
       }).catch((error) => {
         console.log(error);
       });
-};
+    };
+
+     useEffect(() => {
+      localStorage.setItem('likedPosts', JSON.stringify(likedPosts));
+      }, [likedPosts]);
+
+    const clicklike=(postId)=>{   
+      setLikedPosts((prev) =>
+      prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]);
+      const userId=localStorage.getItem("userId")
+      axios.put(`https://reactecomapi.onrender.com/post/like/${postId}`,{userId}).then((response)=>{
+      console.log(response)
+      }).catch((error)=>{
+        console.log(error)
+      })
+    }
+     
+     const handlechanges=(postId,e)=>{
+      setComments({...comments,[postId]:e.target.value });
+      setActivePostId(postId);
+    };
+
+     useEffect(() => {
+      localStorage.setItem('commentPosts', JSON.stringify(commentPosts));
+      }, [commentPosts]);
+       const comment=(postId)=>{
+       setcommentPosts((prev) =>
+       prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]);
+       const id=localStorage.getItem("userId")
+       const text=comments[postId]
+       axios.post(`https://reactecomapi.onrender.com/post/comment/${postId}`,{id,text}).then((response)=>{
+       console.log(response)
+       setShowAddComment(false) 
+       setComments('')
+        }).catch((error)=>{
+          console.log(error)
+        })
+    }
 
   return (
     <div className="sidebar-profile" style={{backgroundColor:' rgb(193, 190, 255)'}}>
@@ -163,24 +212,26 @@ const SidebarProfile = () => {
     </div>
     )}
       <button className="btn btn-secondary btn-sm" style={{ width: '300px' }}onClick={() => setShowAddPostForm(!showAddPostForm)}>Add</button>
-{showAddPostForm && (
-  <div className="p-3">
-    <textarea className="form-control mb-2" placeholder="typing your post" name="text" onChange={handlechange}/>
-    <input type="file" accept="image/*" name="image" onChange={handleFileChange}className="form-control mb-2"/>
-    <button className="btn btn-success" onClick={add} style={{ width: '300px' }}>Create Post</button>
-  </div>
-)}
+      {showAddPostForm && (
+        <div className="p-3">
+          <textarea className="form-control mb-2" placeholder="typing your post" name="text" onChange={handlechange}/>
+          <input type="file" accept="image/*" name="image" onChange={handleFileChange}className="form-control mb-2"/>
+          <button className="btn btn-success" onClick={add} style={{ width: '300px' }}>Create Post</button>
+        </div>
+      )}
      <button className="btn btn-outline-danger btn-sm " style={{width:'300px',color:'black',textDecoration:'none'}}><a href='/login'>Logout</a></button>
       </div>
       <hr />
       </div>
     ))} 
   <div className='d-flex flex-wrap gap-3 userpost'>
-  {posts.map((data) => (
+  {posts.map((data,index) => (
     <div key={data._id}>
-      <Card style={{ width: '19rem'}}>
+      <Card className='crd'>
         <Card.Body>
-          <Card.Text>{new Date(data.updatedAt).toLocaleString()}</Card.Text>
+          <Card.Text>{new Date(data.updatedAt).toLocaleString()}
+          <button className="btn btn-sm delbtn " style={{ width: '100px', border: 'none', color: 'red',marginTop:'-50px' }} onClick={() => deletes(data._id)}> <Delete size={18}/></button>
+          </Card.Text>
           <Card.Text>
             {data.text=="undefined"?"":data.text}
              {menuPostId === data._id && (
@@ -191,13 +242,38 @@ const SidebarProfile = () => {
           )}
           </Card.Text>
           {data.image && data.image.length > 0 && (
-            <Card.Img variant="top" src={data.image}style={{borderRadius: '0px',height: '150px',width: '200px',marginLeft: '30px'}}/> 
+            <Card.Img variant="top" className='crdimg' src={data.image}style={{borderRadius: '0px',height: '150px',width: '200px'}}/> 
           )}
-          <div className="d-flex">
-            <button className="btn btn-sm " style={{ width: '90px', border: 'none' }}>❤️ {data.likes.length}</button>
-            <button className="btn btn-sm " style={{ width: '140px', border: 'none' }}>💬 </button>
+          <div >
+            <div className="d-flex">
+            <button className="btn btn-sm " style={{ width: '90px', border: 'none' }} onClick={()=>clicklike(data._id)}>{data.likes.length>0 && data.likes.length}{likedPosts.includes(data._id) ? "❤️" : "❤️"}</button>
+            <button className="btn btn-sm " style={{ width: '140px', border: 'none' }} onClick={()=>setShowAddComment(index)}> {data.comments.length >0 && data.comments.length}💬 </button>
             <button className="btn btn-sm " style={{ width: '90px', border: 'none',color:'black'}} onClick={() => {setMenuPostId(menuPostId === data._id ? null : data._id);setEditText(data.text);}}><FilePenLine size={15} /></button>{<br></br>}
-            <button className="btn btn-sm " style={{ width: '100px', border: 'none', color: 'red' }} onClick={() => deletes(data._id)}> <Delete size={18}/></button>
+            </div>
+            {showAddComment === index&& (
+                    <div key={index}>
+                   {data.comments && data.comments.length > 0 && (
+                    <div className="card mt-3">
+                      <div className="card-header">
+                        {activePostId === data._id }
+                      <div className="d-flex">
+                    <input type='text' className='txtcmt' value={comments[data._id] || ""} placeholder="Write comment..." onChange={(e) => handlechanges(data._id, e)}/>
+                  
+                    <button className="btn "  onClick={()=>comment(data._id)} style={{ width: '90px', border: 'none' }} > <MessageSquarePlus size={18}/></button>
+                   </div>
+                      </div>
+                      <div className="card-body p-2">
+                        {data.comments.map((comment, index) => (
+                          <div key={comment._id || index} className="border-bottom mb-2 pb-1" style={{ fontSize: '0.9rem' }}>
+                            <strong>{comment.userId}</strong>: {comment.text}
+                            {/* <button><Delete size={18}/></button> */}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                   </div>
+                  )}
           </div>
         </Card.Body>
       </Card>

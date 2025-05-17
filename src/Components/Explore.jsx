@@ -9,13 +9,13 @@ import profile6 from '../images/story7.png';
 
 const users = [
   { name: 'John Doe', img: profile1 },
-  { name: 'Jane Smith', img: profile2 },
-  { name: 'Alex Johnson', img: profile3 },
-  { name: 'Emily Davis', img: profile4 },
-  { name: 'Chris Lee', img: profile5 },
+  { name: 'Smith', img: profile2 },
+  { name: 'Mariya' },
+  { name: 'Davis', img: profile4 },
+  { name: 'Leon' },
   { name: 'Nina Patel', img: profile6 },
-  { name: 'Mark Taylor' }, 
-  { name: 'Sophie Brown' }, 
+  { name: 'rahmath' , img: profile5}, 
+  { name: 'Sreelakshmi', img: profile3 }, 
   { name: 'Daniel ', img: profile5 },
   { name: 'Ava Wilson', img: profile6 },
   { name: 'Leo Adams' } 
@@ -27,8 +27,15 @@ const Explore = () => {
     {users.map((user, index) => (
   <div className="explore-cards mt-6" key={index}>
     <div className="explore-top">
+
       <div className="explore-img">
-        <img src={user.img} alt={user.name} />
+       {user.img ? (
+                  <img src={user.img} className="rounded-circle me-2" />
+                ) : (
+                  <div className="bg-secondary text-white rounded-circle me-2 d-flex align-items-center justify-content-center" style={{ width: '40px', height: '40px', fontWeight: 'bold', fontSize: '1rem' }}>
+                    {user.name?.charAt(0).toUpperCase()}
+                  </div>
+                )}
       </div>
       <div className="explore-info">
         <strong>{user.name}</strong>

@@ -6,6 +6,7 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../Pages/Home.css'
 import { Modal } from 'react-bootstrap';
+import { MessageSquarePlus } from 'lucide-react';
 
 const Home = () => {
   const [post, setPosts] = useState([]);
@@ -73,9 +74,9 @@ const Home = () => {
           console.log(error)
         })
     }
-    useEffect(()=>{
-    fetchPost()
-  },[]) 
+        useEffect(()=>{
+        fetchPost()
+      },[]) 
 
        const followUser=(id)=>{
        setfollowPosts((prev) =>
@@ -121,14 +122,14 @@ const Home = () => {
                     <img src={items.image} alt="Post" className="img-fluid rounded" style={{width:'200px',height:'150px'}}/>
                   )}{<br></br>}
                  <div className="d-flex gap-3 mt-3">
-                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)}  style={{ maxHeight: '45px', maxWidth: '100px' }}> {likedPosts.includes(items._id) ? "❤️Liked" : "❤️ Like"}{items.likes.length>0 && items.likes.length}</button>
-                  <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} style={{ maxHeight: '45px', maxWidth: '140px' }} >💬 {commentPosts.includes(items._id) ? "commented" : "comment"}{items.comments?.length || 0}</button>
+                  <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)}  style={{ maxHeight: '45px', maxWidth: '100px' }}>{items.likes.length>0 && items.likes.length} {likedPosts.includes(items._id) ? "❤️Liked" : "❤️ Like"}</button>
+                  <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} style={{ maxHeight: '45px', maxWidth: '140px' }} >{items.comments?.length || 0}💬 {commentPosts.includes(items._id) ? "commented" : "comment"}</button>
                   {showAddComment === index&& (
                     <div key={index}>
                     {activePostId === items._id }
                     <input type='text' value={comments[items._id] || ""} placeholder="Write comment..." onChange={(e) => handlechange(items._id, e)}/>
                    <>
-                    <button className="btn btn-success"  onClick={()=>comment(items._id)} >Add</button>
+                    <button className="btn"  onClick={()=>comment(items._id)} ><MessageSquarePlus size={20}/></button>
                    </>
                    {items.comments && items.comments.length > 0 && (
                     <div className="card mt-3">
@@ -138,7 +139,7 @@ const Home = () => {
                       <div className="card-body p-2">
                         {items.comments.map((comment, index) => (
                           <div key={comment._id || index} className="border-bottom mb-2 pb-1" style={{ fontSize: '0.9rem' }}>
-                            <strong>{comment.userId?.username || 'Anonymous'}</strong>: {comment.text}
+                            <strong>{comment.userId|| 'Anonymous'}</strong>: {comment.text}
                           </div>
                         ))}
                       </div>

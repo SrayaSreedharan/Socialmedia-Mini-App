@@ -26,6 +26,15 @@
   margin-right: auto;
   width: 50%;
 }
+.crd{
+  width: 19rem;
+}
+.delbtn{
+  margin-left: 220px;
+}
+.crdimg{
+  margin-left: 35px;
+}
 @media (max-width: 600px) {
     .profile-header {
       flex-direction: column;
@@ -36,8 +45,17 @@
       justify-content: center;
     }  
     .userpost{
-      margin-left: 100px;
+      margin-left: 86px;
       
+    }
+    .crd{
+      width: 350px;
+    }
+    .delbtn{
+      margin-left: 270px;
+    }
+    .crdimg{
+      margin-left: 55px;
     }
   }
   
