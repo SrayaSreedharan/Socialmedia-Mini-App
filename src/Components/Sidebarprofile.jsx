@@ -5,13 +5,11 @@ import axios from 'axios';
 import { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
-import { Delete } from 'lucide-react';
-import { FilePenLine } from 'lucide-react';
+import { MdDelete, MdEdit } from 'react-icons/md';
 import { MessageSquarePlus } from 'lucide-react';
 
 const SidebarProfile = () => {
   const[data,setData]=useState([])
-  // const [del, setDelete] = useState([]);
   const[postdata,setPostdata]=useState({})
   const [showAddPostForm, setShowAddPostForm] = useState(false);
   const [showEditPostForm, setShowEditPostForm] = useState(false); 
@@ -252,7 +250,7 @@ const SidebarProfile = () => {
       <Card className='crd'>
         <Card.Body>
           <Card.Text>{new Date(data.updatedAt).toLocaleString()}
-          <button className="btn btn-sm delbtn " style={{ width: '100px', border: 'none', color: 'red',marginTop:'-50px' }} onClick={() => deletes(data._id)}> <Delete size={18}/></button>
+          <button className="btn btn-sm delbtn " style={{ width: '100px', border: 'none', color: 'red',marginTop:'-55px' }} onClick={() => deletes(data._id)}><MdDelete size={20} /></button>
           </Card.Text>
           <Card.Text>
             {data.text=="undefined"?"":data.text}
@@ -270,7 +268,7 @@ const SidebarProfile = () => {
             <div className="d-flex">
             <button className="btn btn-sm " style={{ width: '90px', border: 'none' }} onClick={()=>clicklike(data._id)}>{data.likes.length>0 && data.likes.length}{likedPosts.includes(data._id) ? "❤️" : "❤️"}</button>
             <button className="btn btn-sm " style={{ width: '140px', border: 'none' }} onClick={()=>setShowAddComment(index)}> {data.comments.length >0 && data.comments.length}{commentPosts.includes(data._id) ? "💬" : "💬"} </button>
-            <button className="btn btn-sm " style={{ width: '90px', border: 'none',color:'black'}} onClick={() => {setMenuPostId(menuPostId === data._id ? null : data._id);setEditText(data.text);}}><FilePenLine size={15} /></button>{<br></br>}
+            <button className="btn btn-sm " style={{ width: '90px', border: 'none',color:'black'}} onClick={() => {setMenuPostId(menuPostId === data._id ? null : data._id);setEditText(data.text);}}> <MdEdit size={20} /></button>{<br></br>}
             </div>
             {showAddComment === index&& (
                     <div key={index}>
@@ -286,8 +284,8 @@ const SidebarProfile = () => {
                       <div className="card-body p-2">
                         {data.comments.map((comment, index) => (
                           <div key={comment._id || index} className="border-bottom mb-2 pb-1" style={{ fontSize: '0.9rem' }}>
-                             <button style={{color: 'red'}} onClick={() => deletecmt(data._id, comment._id)}><Delete size={18}/></button>
-                            <strong>{comment.userId}</strong>: {comment.text}
+                             <button style={{color: 'red'}} onClick={() => deletecmt(data._id, comment._id)}><MdDelete size={20} /></button>
+                            <strong>{comment._id}</strong>: {comment.text}
                           </div>
                         ))}
                       </div>
