@@ -27,7 +27,6 @@ const Explore = () => {
     {users.map((user, index) => (
   <div className="explore-cards mt-6" key={index}>
     <div className="explore-top">
-
       <div className="explore-img">
        {user.img ? (
                   <img src={user.img} className="rounded-circle me-2" />

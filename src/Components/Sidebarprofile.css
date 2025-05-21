@@ -25,16 +25,16 @@
   margin-left: auto;
   margin-right: auto;
   width: 50%;
-}
-.crd{
-  width: 19rem;
-}
-.delbtn{
-  margin-left: 220px;
-}
-.crdimg{
-  margin-left: 35px;
-}
+  }
+  .crd{
+    width: 19rem;
+  }
+  .delbtn{
+    margin-left: 220px;
+  }
+  .crdimg{
+    margin-left: 35px;
+  }
 @media (max-width: 600px) {
     .profile-header {
       flex-direction: column;

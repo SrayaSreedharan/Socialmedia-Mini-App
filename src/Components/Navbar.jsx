@@ -11,7 +11,6 @@ const Navbar = () => {
         <div style={{ position: 'relative' }}>
           <Heart />
           <span className="badge bg-danger rounded-circle" style={{position: 'absolute',top: '-8px',right: '-10px',fontSize: '0.6rem',}}>8</span>
-
         </div>
         <div style={{ position: 'relative' }}>
           <FaEnvelope size={20} />
@@ -21,7 +20,6 @@ const Navbar = () => {
           <FaBell size={20} />
           <span className="badge bg-danger rounded-circle" style={{position: 'absolute',top: '-8px',right: '-10px',fontSize: '0.6rem',}}>5</span>
         </div>
-        
         <Link to="/login" style={{ textDecoration: 'none', color: 'white' }}> LOGOUT</Link>
       </div>
     </nav>

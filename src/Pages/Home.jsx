@@ -147,7 +147,7 @@ const Home = () => {
                   )}{<br></br>}
                  <div className="d-flex gap-3 mt-3">
                   <button className="btn btn-sm btn-outline-primary" onClick={()=>clicklike(items._id)}  style={{ maxHeight: '45px', maxWidth: '100px' }}>{items.likes.length>0 && items.likes.length} {likedPosts.includes(items._id) ? "❤️Liked" : "❤️ Like"}</button>
-                  <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} style={{ maxHeight: '45px', maxWidth: '140px' }} >{items.comments?.length || 0}💬 {commentPosts.includes(items._id) ? "commented" : "comment"}</button>
+                  <button className="btn btn-sm btn-outline-secondary"  onClick={()=>setShowAddComment(index)} style={{ maxHeight: '45px', maxWidth: '140px' }} >{items.comments?.length || 0}💬 {commentPosts.includes(items._id) ? "comment" : "comment"}</button>
                   {showAddComment === index&& (
                     <div key={index}>
                     {activePostId === items._id }
@@ -166,7 +166,7 @@ const Home = () => {
                             {/* {comment.userId === currentUserId && ( */}
                               <button onClick={() => deletecmt(items._id, comment._id, currentUserId)} style={{color: 'red'}}><MdDelete size={20} /></button>
                             {/* )} */}
-                            {comment._id}: {comment.text}
+                            {comment.usetname}: {comment.text}
                           </div>
                         ))}
                       </div>
