@@ -30,7 +30,7 @@ const Login = () => {
           }
             e.preventDefault()
             axios.post("https://reactecomapi.onrender.com/socioauth/login",login).then((response)=>{
-               console.log(response.data.username)
+              console.log(response.data.username)
               console.log(response.data._id)
               localStorage.setItem("userId",response.data._id)
               localStorage.setItem("username",response.data.username)

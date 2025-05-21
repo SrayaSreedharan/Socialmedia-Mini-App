@@ -15,19 +15,19 @@ const SidebarProfile = () => {
   const [showEditPostForm, setShowEditPostForm] = useState(false); 
   const[showAddComment,setShowAddComment]=useState(false)
   const[editdata,setEditdata]=useState({})
-   const[comments,setComments]=useState('')
+  const[comments,setComments]=useState('')
   const [posts, setPosts] = useState([]);
   const [menuPostId, setMenuPostId] = useState(null);
   const [editText, setEditText] = useState("");
   const [activePostId, setActivePostId] = useState(null); 
   const [likedPosts, setLikedPosts] = useState(() => {
-    const storedLikes = localStorage.getItem('likedPosts');
+  const storedLikes = localStorage.getItem('likedPosts');
     return storedLikes ? JSON.parse(storedLikes) : [];
     });
-    const [commentPosts, setcommentPosts] = useState(() => {
-      const storedcomment = localStorage.getItem('commentPosts');
-      return storedcomment ? JSON.parse(storedcomment) : [];
-      });
+  const [commentPosts, setcommentPosts] = useState(() => {
+  const storedcomment = localStorage.getItem('commentPosts');
+    return storedcomment ? JSON.parse(storedcomment) : [];
+    });
 
   useEffect(()=>{
     const id=localStorage.getItem("userId")
@@ -142,6 +142,15 @@ const SidebarProfile = () => {
       const userId=localStorage.getItem("userId")
       axios.put(`https://reactecomapi.onrender.com/post/like/${postId}`,{userId}).then((response)=>{
       console.log(response)
+      const updatedPosts = posts.map((p) => {
+        if (p._id === postId) {
+          const alreadyLiked = p.likes.includes(userId);
+          const updatedLikes = alreadyLiked ? p.likes.filter((id) => id !== userId) : [...p.likes, userId]; 
+          return {...p,likes: updatedLikes,};
+        }
+        return p;
+      });
+      setPosts(updatedPosts); 
       }).catch((error)=>{
         console.log(error)
       })
@@ -151,19 +160,20 @@ const SidebarProfile = () => {
       setComments({...comments,[postId]:e.target.value });
       setActivePostId(postId);
     };
-
+     
      useEffect(() => {
       localStorage.setItem('commentPosts', JSON.stringify(commentPosts));
       }, [commentPosts]);
        const comment=(postId)=>{
-        const username=localStorage.getItem("username")
+       const username=localStorage.getItem("username")
        setcommentPosts((prev) =>
        prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]);
        const id=localStorage.getItem("userId")
        const text=comments[postId]
-       axios.post(`https://reactecomapi.onrender.com/post/comment/${postId}`,{id,text},{username}).then((response)=>{
+       axios.post(`https://reactecomapi.onrender.com/post/comment/${postId}`,{id,text,username}).then((response)=>{
        console.log(response)
-       setShowAddComment(false) 
+        setShowAddComment(false) 
+        setActivePostId(null)
         }).catch((error)=>{
           console.log(error)
         })
@@ -182,10 +192,8 @@ const SidebarProfile = () => {
         }
         return post;
       });
-
       setPosts(updatedPosts);         
       setShowAddComment(null);       
-   
       }).catch((error)=>{
         console.log(error)
       })
@@ -283,8 +291,8 @@ const SidebarProfile = () => {
                    </div>
                       </div>
                       <div className="card-body p-2">
-                        {data.comments.map((comment, index) => (
-                          <div key={comment._id || index} className="border-bottom mb-2 pb-1" style={{ fontSize: '0.9rem' }}>
+                        {data.comments.map((comment,index) => (
+                          <div key={comment._id|| index} className="border-bottom mb-2 pb-1" style={{ fontSize: '0.9rem' }}>
                              <button style={{color: 'red'}} onClick={() => deletecmt(data._id, comment._id)}><MdDelete size={20} /></button>
                             <strong>{comment.username}</strong>: {comment.text}
                           </div>

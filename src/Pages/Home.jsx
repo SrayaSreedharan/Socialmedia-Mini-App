@@ -27,7 +27,6 @@ const Home = () => {
   const storedfollow = localStorage.getItem('followPosts');
   return storedfollow ? JSON.parse(storedfollow) : [];
   });
-  const currentUserId = localStorage.getItem("userId");
  
       const fetchPost= ()=>{
       axios.get("https://reactecomapi.onrender.com/post/allpost").then((response)=>{
@@ -51,10 +50,20 @@ const Home = () => {
       const userId=localStorage.getItem("userId")
       axios.put(`https://reactecomapi.onrender.com/post/like/${postId}`,{userId}).then((response)=>{
       console.log(response)
-      }).catch((error)=>{
-        console.log(error)
-      })
+      const updatedPosts = post.map((p) => {
+        if (p._id === postId) {
+          const alreadyLiked = p.likes.includes(userId);
+          const updatedLikes = alreadyLiked ? p.likes.filter((id) => id !== userId) : [...p.likes, userId]; 
+          return {...p,likes: updatedLikes,};
+        }
+        return p;
+        });
+        setPosts(updatedPosts);
+        }).catch((error)=>{
+          console.log(error)
+        })
     }
+
       const handlechange=(postId,e)=>{
       setComments({...comments,[postId]:e.target.value });
       setActivePostId(postId);
@@ -97,22 +106,18 @@ const Home = () => {
        })
     } 
 
-    const deletecmt=(postId,commentId)=>{
-      const currentUserId=localStorage.getItem("userId")
-      axios.delete(`https://reactecomapi.onrender.com/post/ourcomment/${postId}/${commentId}`,{currentUserId}).then((response)=>{
+      const deletecmt=(postId,commentId)=>{
+      // const _id=localStorage.getItem("userId")
+      axios.delete(`https://reactecomapi.onrender.com/post/ourcomment/${postId}/${commentId}`).then((response)=>{
         console.log(response)
-      //   const updatedPosts = post.map((post) => {
-      //   if (post._id === postId) {
-      //     const updatedComments = post.comments.filter((comment) => comment._id !== commentId);
-      //     return {
-      //       ...post,
-      //       comments: updatedComments,
-      //     };
-      //   }
-      //   return post;
-      // });
-
-      // setPosts(updatedPosts);         
+        const updatedPosts = post.map((post) => {
+        if (post._id === postId) {
+          const updatedComments = post.comments.filter((comment) => comment._id !== commentId);
+          return {...post,comments: updatedComments,};
+        }
+        return post;
+      });
+      setPosts(updatedPosts);         
       setShowAddComment(null); 
       }).catch((error)=>{
         console.log(error)
@@ -164,9 +169,7 @@ const Home = () => {
                       <div className="card-body p-2">
                         {items.comments.map((comment, index) => (
                           <div key={comment._id || index} className="border-bottom mb-2 pb-1" style={{ fontSize: '0.9rem' }}>
-                            {/* {comment.userId === currentUserId && ( */}
-                              <button onClick={() => deletecmt(items._id, comment._id, currentUserId)} style={{color: 'red'}}><MdDelete size={20} /></button>
-                            {/* )} */}
+                              <button onClick={() => deletecmt(items._id, comment._id)} style={{color: 'red'}}><MdDelete size={20} /></button>
                             {comment.username}: {comment.text}
                           </div>
                         ))}

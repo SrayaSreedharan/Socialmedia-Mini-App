@@ -31,18 +31,20 @@ const Signup = () => {
     return Object.keys(errormsg).length === 0;
   };
 
-  const handleChange = (e) => {
-    setSignup({ ...signup, [e.target.name]: e.target.value });
-    setError({});  
-  };
+    const handleChange = (e) => {
+      setSignup({ ...signup, [e.target.name]: e.target.value });
+      setError({});  
+    };
 
-  const handleSubmit = (e) => {
+    const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;  
 
-    dispatch(signupUser(signup))
-      .unwrap()
-      .then(() => {
+    dispatch(signupUser(signup)).unwrap().then((response) => {
+        console.log(response.data.username)
+        console.log(response.data._id)
+        localStorage.setItem("userId",response.data._id)
+        localStorage.setItem("username",response.data.username)
         navigate('/login'); 
       })
       .catch((err) => {
