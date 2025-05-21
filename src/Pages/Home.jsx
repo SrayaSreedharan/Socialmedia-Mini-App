@@ -64,11 +64,12 @@ const Home = () => {
       }, [commentPosts]);
 
        const comment=(postId)=>{
+       const username=localStorage.getItem("username")
        setcommentPosts((prev) =>
        prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]);
        const id=localStorage.getItem("userId")
        const text=comments[postId]
-       axios.post(`https://reactecomapi.onrender.com/post/comment/${postId}`,{id,text}).then((response)=>{
+       axios.post(`https://reactecomapi.onrender.com/post/comment/${postId}`,{id,text,username}).then((response)=>{
        console.log(response)
        setShowAddComment(false) 
        setActivePostId(null)
@@ -97,21 +98,21 @@ const Home = () => {
     } 
 
     const deletecmt=(postId,commentId)=>{
-      // const currentUserId=localStorage.getItem("userId")
-      axios.delete(`https://reactecomapi.onrender.com/post/comment/${postId}/${commentId}`,{data: { currentUserId }}).then((response)=>{
+      const currentUserId=localStorage.getItem("userId")
+      axios.delete(`https://reactecomapi.onrender.com/post/ourcomment/${postId}/${commentId}`,{currentUserId}).then((response)=>{
         console.log(response)
-        const updatedPosts = post.map((post) => {
-        if (post._id === postId) {
-          const updatedComments = post.comments.filter((comment) => comment._id !== commentId);
-          return {
-            ...post,
-            comments: updatedComments,
-          };
-        }
-        return post;
-      });
+      //   const updatedPosts = post.map((post) => {
+      //   if (post._id === postId) {
+      //     const updatedComments = post.comments.filter((comment) => comment._id !== commentId);
+      //     return {
+      //       ...post,
+      //       comments: updatedComments,
+      //     };
+      //   }
+      //   return post;
+      // });
 
-      setPosts(updatedPosts);         
+      // setPosts(updatedPosts);         
       setShowAddComment(null); 
       }).catch((error)=>{
         console.log(error)
@@ -166,7 +167,7 @@ const Home = () => {
                             {/* {comment.userId === currentUserId && ( */}
                               <button onClick={() => deletecmt(items._id, comment._id, currentUserId)} style={{color: 'red'}}><MdDelete size={20} /></button>
                             {/* )} */}
-                            {comment.usetname}: {comment.text}
+                            {comment.username}: {comment.text}
                           </div>
                         ))}
                       </div>

@@ -156,11 +156,12 @@ const SidebarProfile = () => {
       localStorage.setItem('commentPosts', JSON.stringify(commentPosts));
       }, [commentPosts]);
        const comment=(postId)=>{
+        const username=localStorage.getItem("username")
        setcommentPosts((prev) =>
        prev.includes(postId) ? prev.filter(id => id !== postId) : [...prev, postId]);
        const id=localStorage.getItem("userId")
        const text=comments[postId]
-       axios.post(`https://reactecomapi.onrender.com/post/comment/${postId}`,{id,text}).then((response)=>{
+       axios.post(`https://reactecomapi.onrender.com/post/comment/${postId}`,{id,text},{username}).then((response)=>{
        console.log(response)
        setShowAddComment(false) 
         }).catch((error)=>{
@@ -285,7 +286,7 @@ const SidebarProfile = () => {
                         {data.comments.map((comment, index) => (
                           <div key={comment._id || index} className="border-bottom mb-2 pb-1" style={{ fontSize: '0.9rem' }}>
                              <button style={{color: 'red'}} onClick={() => deletecmt(data._id, comment._id)}><MdDelete size={20} /></button>
-                            <strong>{comment._id}</strong>: {comment.text}
+                            <strong>{comment.username}</strong>: {comment.text}
                           </div>
                         ))}
                       </div>

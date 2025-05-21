@@ -30,8 +30,10 @@ const Login = () => {
           }
             e.preventDefault()
             axios.post("https://reactecomapi.onrender.com/socioauth/login",login).then((response)=>{
+               console.log(response.data.username)
               console.log(response.data._id)
               localStorage.setItem("userId",response.data._id)
+              localStorage.setItem("username",response.data.username)
               navigate('/home'); 
             }).catch((error)=>{
               console.log(error)
@@ -42,7 +44,7 @@ const Login = () => {
          <div className="login2">
       <div className="card2">
         <div className="left2">
-          <h1>WELCOME</h1>
+          <h1>CONNECT</h1>
           <p>
            Keep connection with friends and share lots of positive things,Enjoy with sharing post and memorable comments
           </p>
