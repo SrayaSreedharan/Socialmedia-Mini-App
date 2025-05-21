@@ -9,23 +9,27 @@ import profile6 from '../images/story7.png';
 
 const users = [
   { name: 'John Doe', img: profile1 },
-  { name: 'Smith', img: profile2 },
-  { name: 'Mariya' },
+  { name: 'Smith_123', img: profile2 },
+  { name: 'Mari_21ya' },
   { name: 'Davis', img: profile4 },
   { name: 'Leon' },
   { name: 'Nina Patel', img: profile6 },
   { name: 'rahmath' , img: profile5}, 
+  { name: 'Jishnu_k_k' } ,
   { name: 'Sreelakshmi', img: profile3 }, 
   { name: 'Daniel ', img: profile5 },
+  { name: 'Avanthika_09' },
   { name: 'Ava Wilson', img: profile6 },
-  { name: 'Leo Adams' } 
+  { name: 'unnima_yas' },
+  { name: 'Avaniii' },
 ];
 
 const Explore = () => {
   return (
-    <div className="explore-containers">
+    <div className='sidebar-profile card shadow-sm p-3 mb-4 bg-white rounded '>
+    <div className="explore-containers ">
     {users.map((user, index) => (
-  <div className="explore-cards mt-6" key={index}>
+  <div className="explore-cards mt-6 " key={index}>
     <div className="explore-top">
       <div className="explore-img">
        {user.img ? (
@@ -43,6 +47,7 @@ const Explore = () => {
     <button className="follow-btns">Follow</button>
   </div>
 ))}
+</div>
 </div>
   )
 }

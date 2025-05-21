@@ -5,6 +5,13 @@
   justify-content: center;
   padding: 20px;
 }
+.sidebar-profile {
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    text-align: center;
+    margin: 20px;
+  }
 .explore-cards {
   background-color: #fff;
   border-radius: 15px;

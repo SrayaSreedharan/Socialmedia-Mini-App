@@ -27,7 +27,7 @@ const Home = () => {
   const storedfollow = localStorage.getItem('followPosts');
   return storedfollow ? JSON.parse(storedfollow) : [];
   });
- 
+  
       const fetchPost= ()=>{
       axios.get("https://reactecomapi.onrender.com/post/allpost").then((response)=>{
       console.log(response.data)
@@ -107,17 +107,20 @@ const Home = () => {
     } 
 
       const deletecmt=(postId,commentId)=>{
-      // const _id=localStorage.getItem("userId")
-      axios.delete(`https://reactecomapi.onrender.com/post/ourcomment/${postId}/${commentId}`).then((response)=>{
+      const userId = localStorage.getItem("userId");
+        console.log("UserId:", userId);
+        console.log("postId:", postId);
+        console.log("commentId:", commentId);
+      axios.delete(`https://reactecomapi.onrender.com/post/ourcomment/${postId}/${commentId}`,{data:{userId}}).then((response)=>{
         console.log(response)
-        const updatedPosts = post.map((post) => {
-        if (post._id === postId) {
-          const updatedComments = post.comments.filter((comment) => comment._id !== commentId);
-          return {...post,comments: updatedComments,};
-        }
-        return post;
-      });
-      setPosts(updatedPosts);         
+      //   const updatedPosts = post.map((post) => {
+      //   if (post._id === postId) {
+      //     const updatedComments = post.comments.filter((comment) => comment._id !== commentId);
+      //     return {...post,comments: updatedComments,};
+      //   }
+      //   return post;
+      // });
+      // setPosts(updatedPosts);         
       setShowAddComment(null); 
       }).catch((error)=>{
         console.log(error)
@@ -169,7 +172,7 @@ const Home = () => {
                       <div className="card-body p-2">
                         {items.comments.map((comment, index) => (
                           <div key={comment._id || index} className="border-bottom mb-2 pb-1" style={{ fontSize: '0.9rem' }}>
-                              <button onClick={() => deletecmt(items._id, comment._id)} style={{color: 'red'}}><MdDelete size={20} /></button>
+                            <button onClick={() => deletecmt(items._id, comment._id)} style={{color: 'red'}}><MdDelete size={20} /></button>
                             {comment.username}: {comment.text}
                           </div>
                         ))}
