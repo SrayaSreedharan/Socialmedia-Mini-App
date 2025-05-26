@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import '../Pages/Login.css'
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios'
+import { toast,ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
     const[login,setLogin]=useState("")
@@ -24,19 +26,21 @@ const Login = () => {
     }
 
     const handlesubmit=(e)=>{
-        
         if(!validate()){
             console.log("validation error")
+             toast.error('validation failed')
           }
             e.preventDefault()
             axios.post("https://reactecomapi.onrender.com/socioauth/login",login).then((response)=>{
               console.log(response.data.username)
               console.log(response.data._id)
+              toast.success('successfully')
               localStorage.setItem("userId",response.data._id)
               localStorage.setItem("username",response.data.username)
               navigate('/home'); 
             }).catch((error)=>{
               console.log(error)
+              toast.error("Failed to Login.");
             })
     }
 
@@ -59,6 +63,7 @@ const Login = () => {
             <button type='submit'className='butn' onClick={handlesubmit}>login</button>{<br></br>}
             <h6>Do you have create account? <a href='/signup'>Signup</a></h6>
         </form>
+         <ToastContainer/>
         </div>
       </div>
     </div>

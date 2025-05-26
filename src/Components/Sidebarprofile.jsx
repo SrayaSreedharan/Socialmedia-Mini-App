@@ -8,6 +8,7 @@ import Modal from 'react-bootstrap/Modal';
 import { MdDelete, MdEdit } from 'react-icons/md';
 import { MessageSquarePlus } from 'lucide-react';
 
+
 const SidebarProfile = () => {
   const[data,setData]=useState([])
   const[postdata,setPostdata]=useState({})
@@ -271,7 +272,7 @@ const SidebarProfile = () => {
           )}
           </Card.Text>
           {data.image && data.image.length > 0 && (
-            <Card.Img variant="top" className='crdimg' src={data.image}style={{borderRadius: '0px',height: '150px',width: '200px'}}/> 
+            <Card.Img variant="top" className='crdimg' src={data.image[0]}style={{borderRadius: '0px',height: '150px',width: '200px'}}/> 
           )}
           <div >
             <div className="d-flex">
